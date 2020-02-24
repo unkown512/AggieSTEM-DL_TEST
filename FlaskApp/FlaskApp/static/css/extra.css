@@ -1,0 +1,21 @@
+.mainnav2 {
+    height: 6.0%;
+    width: 100%;
+    position: fixed;
+    z-index: 1;
+    top: 0px;
+    left: 0px;
+    background-color: #31AFB4;
+    padding-top: 0px;
+}
+
+.thumbnail {
+    position: relative;
+}
+
+.caption {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    width: 100%;
+}

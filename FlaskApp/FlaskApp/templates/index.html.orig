@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>AggieSTEM</title>
+
+    <!-- Bootstrap core CSS -->
+    <!-- <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/extra.css') }}">
+
+    <!-- Custom fonts for this template -->
+    <!-- <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/fontawesome-free/css/all.min.css') }}">
+    
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+    <!-- Plugin CSS -->
+    <!-- <link href="/vendor/magnific-popup/magnific-popup.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/magnific-popup/magnific-popup.css') }}">
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="/css/creative.min.css" rel="stylesheet"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/creative.min.css') }}">-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/creative.css') }}">
+
+    <!--- MOBILE --->
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.css" />
+
+  </head>
+
+  <body id="page-top">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="{{ url_for('dashboard') }}">AggieSTEM</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#about">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#services">Tools</a>
+            </li>
+            <li class="nav-item" id="login" name="login">
+              <a class="nav-link js-scroll-trigger" href="{{ url_for('userProfile') }}">Account {{user}}</a>
+<<<<<<< Updated upstream
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="{{ url_for('manage_users') }}">Manage Users</a>
+            </li>
+=======
+            </li>   
+            <li class="nav-item" id="manageuser" name="manageuser">
+              <a class="nav-link js-scroll-trigger" href="{{ url_for('manage_users') }}">Manage Users</a>
+            </li>
+            <li class="nav-item" id="managegroups" name="managegroups">
+              <a class="nav-link js-scroll-trigger" href="{{ url_for('manage_groups') }}">Manage Groups</a>
+            </li>
+>>>>>>> Stashed changes
+            <li class="nav-item" id="logout" name="logout">
+              <a class="nav-link js-scroll-trigger" href="{{ url_for('logout') }}">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+    <header class="masthead text-center text-white d-flex">
+      <div class="container my-auto">
+        <div class="row">
+          <div class="col-lg-8 mx-auto">
+            <h1>Welcome</h1>
+            <a class="btn btn-primary btn-xl js-scroll-trigger" href="#about">Find Out More</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="bg-primary" id="about">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto text-center" >
+            <h2 class="section-heading text-white">AggieSTEM Digitial Library</h2>
+            <hr class="light my-4">
+            <p class="text-white mb-4">Organization of audio, video, PDF, text, and image documents.</p>
+            <p class="text-white mb-4">Secure messaging system for alerts and updates.</p>
+            <p class="text-white mb-4">Create shared, global, and personal medica libraries of data.</p>
+            
+            <a class="btn btn-light btn-xl js-scroll-trigger" href="#services">Get Started!</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="services">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 text-center">
+            <h2 class="section-heading">AggieSTEM Tools</h2>
+            <hr class="my-4">
+          </div>
+        </div>
+      </div>
+
+      <strong>
+        {% if request.MOBILE %} 
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-4 col-md-6 text-center">
+                <div class="service-box mt-5 mx-auto">
+                  <h3 class="mb-3">Media Collection</h3>
+                  <!-- img -->
+                  <p class="text-muted mb-0">View personal and shared video, audio, text, image, and PDF files.</p>
+                  <a href="#quqn">Learn More</a>
+                </div>
+              </div> 
+              <div class="col-lg-4 col-md-6 text-center">
+                <div class="service-box mt-5 mx-auto">
+                  <h3 class="mb-3">Upload New Media File</h3>
+                  <!-- img -->
+                  <p class="text-muted mb-0">Upload video, audio, text, image, and PDF files.</p>
+                  <a href="#quqn">Learn More</a>
+                </div>
+              </div> 
+              <div class="col-lg-4 col-md-6 text-center">
+                <div class="service-box mt-5 mx-auto">
+                  <h3 class="mb-3">Message System</h3>
+                  <!-- img -->
+                  <p class="text-muted mb-0">Send out scheduled end-to-end encrypted text messages to users</p>
+                  <a href="#quqn">Learn More</a>
+                </div>
+              </div> 
+            </div>
+          </div>
+
+        {% else %}
+
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-4 col-md-6 text-center">
+                <div class="service-box mt-5 mx-auto">
+                  <h3 class="mb-3">Media Collection</h3>
+                  <!-- img -->
+                  <p class="text-muted mb-0">View personal and shared video, audio, text, image, and PDF files.</p>
+                  <a href="#quqn">Learn More</a>
+                </div>
+              </div> 
+              <div class="col-lg-4 col-md-6 text-center">
+                <div class="service-box mt-5 mx-auto">
+                  <h3 class="mb-3">Upload New Media File</h3>
+                  <!-- img -->
+                  <p class="text-muted mb-0">Upload video, audio, text, image, and PDF files.</p>
+                  <a href="#quqn">Learn More</a>
+                </div>
+              </div> 
+              <div class="col-lg-4 col-md-6 text-center">
+                <div class="service-box mt-5 mx-auto">
+                  <h3 class="mb-3">Message System</h3>
+                  <!-- img -->
+                  <p class="text-muted mb-0">Send out scheduled end-to-end encrypted text messages to users</p>
+                  <a href="#quqn">Learn More</a>
+                </div>
+              </div> 
+            </div>
+          </div>
+        {% endif %}
+      </strong>
+  </body>      
+  <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-4 text-center text-dark">Copyright &copy; AggieSTEM 2019</p>
+    </div>
+    <!-- /.container -->
+  </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- <script src="/vendor/jquery/jquery.min.js"></script> -->
+    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+
+    <!-- <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+    <!-- Plugin JavaScript -->
+    <!-- <script src="/vendor/jquery-easing/jquery.easing.min.js"></script> -->
+    <script src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+
+    <!-- <script src="/vendor/scrollreveal/scrollreveal.min.js"></script> -->
+    <script src="{{ url_for('static', filename='vendor/scrollreveal/scrollreveal.min.js') }}"></script>
+
+    <!-- <script src="/vendor/magnific-popup/jquery.magnific-popup.min.js"></script> -->
+    <script src="{{ url_for('static', filename='vendor/magnific-popup/jquery.magnific-popup.min.js') }}"></script>
+
+    <!-- Custom scripts for this template -->
+    <!-- <script src="/js/creative.min.js"></script> -->
+    <script src="{{ url_for('static', filename='js/creative.min.js') }}"></script>
+
+    
+
+  
+
+</html>

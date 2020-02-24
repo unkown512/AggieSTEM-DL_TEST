@@ -1,0 +1,82 @@
+
+{% import "bootstrap/wtf.html" as wtf %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Meca Signup</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===========================================================================================================================================-->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+<!--===========================================================================================================================================-->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fonts/font-awesome.min.css')}}">
+<!--===========================================================================================================================================-->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fonts/material-design-iconic-font.min.css')}}">
+<!--===========================================================================================================================================-->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/animation/animate.css')}}">
+<!--===========================================================================================================================================-->	
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/hamburgers.min.css')}}">
+<!--===========================================================================================================================================-->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/animation/animsition.min.css')}}">
+<!--===========================================================================================================================================-->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/select2.min.css')}}">
+<!--===========================================================================================================================================-->	
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/daterangepicker.css')}}">
+<!--===========================================================================================================================================-->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/util.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css')}}">
+<!--===========================================================================================================================================-->
+</head>
+<body>
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100">
+            <form class="login100-form validate-form" method="POST" action="{{ url_for('signup') }}">
+                <span class="login100-form-title p-b-26">
+                  Create Account
+                </span>
+                <span class="login100-form-title p-b-48">
+                  <img id="image_canv" src="{{ url_for('static', filename='img/AggieSTEM-Horizontal-Maroon-1.png') }}" style="width:100%;height:100%" alt="">
+                </span>
+                <!--data-validate = "Valid email is: a@b.c"-->
+                {{ form.hidden_tag() }}
+                {{ wtf.form_field(form.username) }}
+                {{ wtf.form_field(form.password) }}
+                {{ wtf.form_field(form.conf_password) }}
+                {{ wtf.form_field(form.email) }}
+                {{ wtf.form_field(form.conf_email) }}                               
+                <div class="container-login100-form-btn">
+                    <div class="wrap-login100-form-btn">
+                        <div class="login100-form-bgbtn"></div>
+                        <button class="login100-form-btn">
+                            Signup
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--=========================================================================================================-->
+    <script src="{{ url_for('static', filename='vendor/signin/jquery/jquery-3.2.1.min.js')}}"></script>
+<!--=========================================================================================================-->
+    <script src="{{ url_for('static', filename='vendor/signin/animsition/js/animsition.min.js')}}"></script>
+<!--=========================================================================================================-->
+    <script src="{{ url_for('static', filename='vendor/signin/bootstrap/js/popper.js')}}"></script>
+    <script src="{{ url_for('static', filename='vendor/signin/bootstrap/js/bootstrap.min.js')}}"></script>
+<!--=========================================================================================================-->
+    <script src="{{ url_for('static', filename='vendor/signin/select2/select2.min.js')}}"></script>
+<!--=========================================================================================================-->
+    <script src="{{ url_for('static', filename='vendor/signin/daterangepicker/moment.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='vendor/signin/daterangepicker/daterangepicker.js')}}"></script>
+<!--=========================================================================================================-->
+    <script src="{{ url_for('static', filename='vendor/signin/countdowntime/countdowntime.js')}}"></script>
+<!--=========================================================================================================-->
+    <script src="{{ url_for('static', filename='js/signin/main.js')}}"></script>
+
+
+</body>
+</html>

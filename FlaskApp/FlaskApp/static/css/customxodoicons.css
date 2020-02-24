@@ -1,0 +1,107 @@
+@font-face {
+  font-family: 'customxodoIcons';
+  src: url('fonts/custom3.ttf') format('truetype');
+
+  font-weight: normal;
+  font-style: normal;
+}
+
+.glyphicons.customxodoicons:before{
+    font-family: 'customxodoIcons';
+}
+
+.customxodoicons.document:before{
+	content: '\0061';
+}
+.customxodoicons.shared:before{
+	content: '\0065';
+}
+.customxodoicons.documents:before{
+	content: '\0066';
+}
+.customxodoicons.local:before{
+	content: '\0067';
+	position: relative;
+	top: -2.5px;
+}
+.customxodoicons.bookshelf:before{
+	content: '\0068';
+}
+.customxodoicons.dropbox:before{
+	content: '\0069';
+}
+.customxodoicons.drive:before{
+	content: '\006A';
+}
+.customxodoicons.xodo:before{
+	content: '\0035';
+}
+.customxodoicons.link:before{
+	content: '\006B';
+}
+.customxodoicons.folder:before{
+	content: '\006C';
+}
+.customxodoicons.user:before{
+	content: '\006D';
+}
+.customxodoicons.share:before{
+	content: '\006E';
+}
+.customxodoicons.graduation:before{
+	content: '\006F';
+}
+.customxodoicons.circle-check:before{
+	content: '\0070';
+}
+.customxodoicons.circle-question:before{
+	content: '\0071';
+}
+.customxodoicons.info:before{
+	content: '\0072';
+}
+.customxodoicons.ellipsis-bubble:before{
+	content: '\0073';
+}
+.customxodoicons.door:before{
+	content: '\0074';
+}
+.customxodoicons.settings:before{
+	content: '\0075';
+}
+.customxodoicons.download:before{
+	content: '\0076';
+}
+.customxodoicons.delete:before{
+	content: '\0077';
+}
+.customxodoicons.rotate-left:before{
+	content: '\0078';
+}
+.customxodoicons.rotate-right:before{
+	content: '\0079';
+}
+.customxodoicons.double-refresh:before{
+	content: '\007A';
+}
+.customxodoicons.refresh:before{
+	content: '\0041';
+}
+.customxodoicons.twitter:before{
+	content: '\0031';
+}
+.customxodoicons.linkedin:before{
+	content: '\0032';
+}
+.customxodoicons.gplus:before{
+	content: '\0033';
+}
+.customxodoicons.youtube:before{
+	content: '\0034';
+}
+.customxodoicons.facebook:before{
+	content: '\0030';
+}
+.customxodoicons.bookmark:before{
+	content: '\e073';
+}

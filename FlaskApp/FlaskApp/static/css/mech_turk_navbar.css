@@ -1,0 +1,256 @@
+
+body {
+    font-family: "Lato", sans-serif;
+}
+
+.sidenav {
+
+    width: 18%;
+    z-index: 1;
+
+    margin-left: -10px;
+    background-color: #500000;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+.center-div {
+	margin: auto;
+	width: 100%;
+}
+
+.center-div-examples {
+	margin-left: 42%;
+	position: relative;
+}
+
+.pull-right-sb {
+  position: absolute;
+  right: 10px;
+}
+.previous_examples {
+	margin-left: 25%;
+	margin-top: 5%;
+}
+.sidenav a {
+    padding: 6px 6px 6px 18px;
+    text-decoration: none;
+    font-size: 2vw;
+    color: #fcfeff;
+    display: block;
+}
+
+.hline {
+	border-bottom: 4px solid #000; 
+	height: 5%;
+	width: 100%;
+	margin-left:-150px;
+	position: absolute;
+}
+
+/* #2bdbe2 */
+.hline2 {
+	border-bottom: 55px solid #2bdbe2; 
+	margin-top: 0px;
+	height: 5%;
+	width: 100%;
+
+}
+
+.hline3 {
+	border-bottom: 55px solid white; 
+	margin: auto;
+	height: 5%;
+	width: 100%;
+
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+.sidenav1{
+	  margin-top: 12%;
+    margin-left: 32%; /* Same as the width of the sidenav */
+}
+
+.sidenav2{
+	  margin-top: 12%;
+    margin-left: 32%; /* Same as the width of the sidenav */
+}
+
+.sidenav3{
+	  margin-top: 12%;
+    margin-left: 32%; /* Same as the width of the sidenav */
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+.current_page_item {
+  background-color: #2bdbe2;
+  color: #FFF;
+}
+
+.unavbuttons {
+	margin-top: 125px;
+	position: realtive;
+	
+}
+
+.myButton {
+	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	box-shadow:inset 0px 1px 0px 0px #ffffff;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf));
+	background:-moz-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
+	background:-webkit-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
+	background:-o-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
+	background:-ms-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
+	background:linear-gradient(to bottom, #ededed 5%, #dfdfdf 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf',GradientType=0);
+	background-color:#ededed;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	cursor:pointer;
+	color:#777777;
+	font-family:Arial;
+	font-size:24px;
+	font-weight:bold;
+	padding:10px 21px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #ffffff;
+}
+
+.myButton:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed));
+	background:-moz-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
+	background:-webkit-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
+	background:-o-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
+	background:-ms-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
+	background:linear-gradient(to bottom, #dfdfdf 5%, #ededed 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed',GradientType=0);
+	background-color:#dfdfdf;
+}
+
+.myButton:active {
+	
+	margin-top:1px;
+}
+
+.home-dropzone {
+    margin-left: auto;
+    margin-right: auto;
+    border-color: #B2B7B9;
+    border-radius: 4px;
+    width: 525px!important;
+    height: 360px!important;
+}
+
+.home-dropzone {
+	width:100%;
+	height:100%;
+	border-style:dashed;
+	margin-top: 200px;
+}
+
+.dropMessage {
+	margin-top: 30%;
+	margin-left: 20%;
+	color: #B2B7B9;
+	font-size: 20pt;
+}
+
+.ordrop {
+	margin-top: 10%;
+	margin-left: 50%;
+	color: #B2B7B9;
+	font-size: 20pt;	
+}
+
+.dropicon {
+	margin-top: 10%;
+	margin-left: 35%;	
+}
+
+.doc {
+	margin-top: 200px;
+	position: realtive;
+}
+
+.divEmbed object{
+
+	width: 100%;
+	height: 1000px;
+	position: relative;
+	
+}
+
+.toolbar {
+	margin: auto;
+	margin-left: 5%;
+	margin-top: 7%;
+  position: relative;
+}
+
+.main-content {
+  margin-top: 1.8%;
+}
+
+.usernav {
+
+}
+.toolButton {
+	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	box-shadow:inset 0px 1px 0px 0px #ffffff;
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf));
+	background:-moz-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
+	background:-webkit-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
+	background:-o-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
+	background:-ms-linear-gradient(top, #ededed 5%, #dfdfdf 100%);
+	background:linear-gradient(to bottom, #ededed 5%, #dfdfdf 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf',GradientType=0);
+	background-color:#ededed;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	cursor:pointer;
+	color:#777777;
+	font-family:Arial;
+	font-size:18px;
+	font-weight:bold;
+	padding:4px 8px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #ffffff;
+}
+
+.toolButton:hover {
+	background:-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed));
+	background:-moz-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
+	background:-webkit-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
+	background:-o-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
+	background:-ms-linear-gradient(top, #dfdfdf 5%, #ededed 100%);
+	background:linear-gradient(to bottom, #dfdfdf 5%, #ededed 100%);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed',GradientType=0);
+	background-color:#dfdfdf;
+}
+
+.toolButton:active {
+	margin-top:1px;
+}
+
+.t1 {
+	float: left;
+}
+.t2 {
+	margin-left: 50%;
+}
+

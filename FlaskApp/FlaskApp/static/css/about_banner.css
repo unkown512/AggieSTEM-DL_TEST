@@ -1,0 +1,15 @@
+.about-banner {
+  background: -moz-linear-gradient(0deg, #500000 0%, #500000 100%);
+  background: -webkit-linear-gradient(0deg, #500000 0%, #500000 100%);
+  background: -ms-linear-gradient(0deg, #500000 0%, #500000 100%);
+}
+
+.about-content {
+  margin-top: 1px;
+  padding: 10px 0px;
+  text-align: center;
+}
+
+.row {
+  height: 10px;
+}
