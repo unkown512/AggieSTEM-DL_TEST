@@ -13,7 +13,7 @@ create group table
 create group html/js
 create group db model code
 create table for data tiles (possibly api?)
-
+email info in file
 
 
 ----------
