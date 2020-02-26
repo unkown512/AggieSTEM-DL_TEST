@@ -456,11 +456,13 @@ def send_email_code():
     f.close()
     message = message + ": " + str(code)
 
-    port = 465
-    password = "Awsedrft42$"
+    f = open("/home/aggie/.smtp/credentials", "rt")
+    data = f.read().split("\n")
+    password = data[1].split("=")[1].lstrip()
+    port = data[2].split("=")[1].lstrip()
+    sender = data[0].split("=")[1].lstrip()
 
     context = ssl.create_default_context()
-    sender = "aggiestem.dl@gmail.com"
     reciever = email
     smtp_server = "smtp.gmail.com"
 
@@ -484,11 +486,14 @@ def send_email():
     email = request.form['email']
     message = request.form['message'][1:-1]
 
-    port = 465
-    password = "Awsedrft42$"
+    f = open("/home/aggie/.smtp/credentials", "rt")
+    data = f.read().split("\n")
+    password = data[1].split("=")[1].lstrip()
+    port = data[2].split("=")[1].lstrip()
+
 
     context = ssl.create_default_context()
-    sender = "aggiestem.dl@gmail.com"
+    sender = data[0].split("=")[1].lstrip()
     reciever = email
     smtp_server = "smtp.gmail.com"
 
