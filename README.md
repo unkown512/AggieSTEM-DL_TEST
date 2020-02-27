@@ -7,7 +7,7 @@
 5) In host config file/virtual host apache add the github name path to `/var/www/<github>/html/....`
 6) Make sure you download python 3.6.9 and redirect python to that verison.
 7) Also from step 4. Make sure mod wsgi is for python 3!
-8) Enable ssl for apache. can try this link https://hostadvice.com/how-to/configure-apache-with-tls-ssl-certificate-on-ubuntu-18/
+8) Enable ssl for apache. can try this link https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-apache-in-ubuntu-18-04
 9) pip install requriments
 10) use command `sudo service apache2 restart` after changes
 11) `vi /var/log/apache2/error.log` for errors
