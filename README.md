@@ -22,4 +22,7 @@ If the results of a pull request fail to compile or work three times, then pull 
 13. If you want to run __init__.py without apache2: see the run_server.py setup from https://github.com/unkown512/AggieSTEM_DL_TEST
 
 
-
+ Markup : 1. A numbered list
+              1. A nested numbered list
+              2. Which is numbered
+          2. Which is numbered
