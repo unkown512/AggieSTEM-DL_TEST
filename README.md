@@ -1,6 +1,6 @@
 
 # For Collaborators  
-Create a branch and submit pull requests to master
+Create a branch and submit pull requests to master.
 If the results of a pull request fail to compile or work three times, then pull requests from that colaborator will be suspended. 
 
 # Steps to setup
