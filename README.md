@@ -8,9 +8,9 @@ If the results of a pull request fail to compile or work three times, then pull 
 2) cd /var/www/
 3) git clone https://github.com/unkown512/AggieSTEM-DL-PRODUCTION.git
 4) https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-18-04
-  4.b) In host config file/virtual host apache add the github name path to `/var/www/<github>/html/....`
-  4.c) Make sure you download python 3.6.9 and redirect python to that verison.
-  4.d) Also from step 4. Make sure mod wsgi is for python 3!
+  4.b: In host config file/virtual host apache add the github name path to `/var/www/<github>/html/....`
+  4.c: Make sure you download python 3.6.9 and redirect python to that verison.
+  4.d: Also from step 4. Make sure mod wsgi is for python 3!
 8) Enable ssl for apache. can try this link https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-apache-in-ubuntu-18-04
 9) pip install requriments
 10) use command `sudo service apache2 restart` after changes
