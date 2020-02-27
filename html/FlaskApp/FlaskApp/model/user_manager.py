@@ -331,8 +331,15 @@ def check_phone_number(db, phone_number):
   return False
 
 # TEST CASES FUNCTIONS
-
-#DB = pymysql.connect("localhost", "aggie", "Awsedrft22$", "aggiestemdl");
+'''
+f = open("/home/aggie/.mysql/credentials", "rt")
+data = f.read().split("\n")
+host = data[0].split("=")[1].lstrip()
+user = data[1].split("=")[1].lstrip()
+pw = data[2].split("=")[1].lstrip()
+database = data[3].split("=")[1].lstrip()
+DB = pymysql.connect(host, user, pw, database)
+'''
 #add_user(DB, ["test", "pw12345678", "djb@tamu.edu", "D", "8322740571", 1, 1])
 #print(validate_user(DB, "djb@tamu.edu", "pw12345678"))
 #print(get_username(DB, "djb@tamu.edu"))
