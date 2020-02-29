@@ -140,6 +140,38 @@ def get_user_id(db, username):
     return False
   return cursor.fetchone()[0]
 
+def check_login(db, userid):
+  cursor = db.cursor()
+  sql = """
+        SELECT recno, username, is_logged_in from `user` where recno = '%s' limit 1
+        """
+  try:
+    print(sql % userid)
+    cursor.execute(sql % userid)
+    db.commit()
+  except pymysql.Error as e:
+    print('Got error {!r}, errno is {}. Rollback'.format(e, e.args[0]))
+    db.rollback()
+    return False
+  result = cursor.fetchone()
+  if(result[2] == 0):
+    return False
+  return result 
+
+def user_login_status(db, userid, status):
+  cursor = db.cursor()
+  sql = """
+        UPDATE `user` set is_logged_in = '%s' where recno = '%s' limit 1
+        """
+  try:
+    cursor.execute(sql % (status, userid))
+  except pymysql.Error as e:
+    print('Got error {!r}, errno is {}. Rollback'.format(e, e.args[0]))
+    db.rollback()
+    return False
+  return True
+
+
 def get_username(db, email):
   cursor = db.cursor()
   sql = """
@@ -330,16 +362,40 @@ def check_phone_number(db, phone_number):
     return True
   return False
 
+def add_request_form(db, data):
+  cursor = db.cursor()
+
+  columns = "("
+  values = "("
+  for col in data:
+    columns += str(col) + ","
+    values += "'" + str(data[col]) + "'" + ","
+  columns = columns[:-1] + ")"
+  values = values[:-1] + ")"
+
+  # user table insert
+  sql = """ INSERT INTO `request_data` %s 
+            VALUES %s
+        """
+  insert_tuple = (columns, values)
+  print(insert_tuple)
+  try:
+    cursor.execute(sql % insert_tuple)
+    db.commit()
+  except pymysql.Error as e:
+    print('Got error {!r}, errno is {}. Rollback'.format(e, e.args[0]))
+    db.rollback()
+  
+
 # TEST CASES FUNCTIONS
-'''
-f = open("/home/aggie/.mysql/credentials", "rt")
-data = f.read().split("\n")
-host = data[0].split("=")[1].lstrip()
-user = data[1].split("=")[1].lstrip()
-pw = data[2].split("=")[1].lstrip()
-database = data[3].split("=")[1].lstrip()
-DB = pymysql.connect(host, user, pw, database)
-'''
+def DB_client():
+  f = open("/home/aggie/.mysql/credentials", "rt")
+  data = f.read().split("\n")
+  host = data[0].split("=")[1].lstrip()
+  user = data[1].split("=")[1].lstrip()
+  pw = data[2].split("=")[1].lstrip()
+  database = data[3].split("=")[1].lstrip()
+  return pymysql.connect(host, user, pw, database)
 #add_user(DB, ["test", "pw12345678", "djb@tamu.edu", "D", "8322740571", 1, 1])
 #print(validate_user(DB, "djb@tamu.edu", "pw12345678"))
 #print(get_username(DB, "djb@tamu.edu"))

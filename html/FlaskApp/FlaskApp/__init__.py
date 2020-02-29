@@ -58,16 +58,14 @@ def init_login_manager(app):
   login_manager = LoginManager()
   login_manager.init_app(app)
   login_manager.login_view = 'signin'
-  user_login_list = list()
-  return(login_manager, user_login_list)
+  return login_manager
 
-(login_manager, user_login_list) = init_login_manager(app)
+login_manager = init_login_manager(app)
 
 class User(UserMixin):
-  def __init__(self, username, password, id, access):
+  def __init__(self, username, id, access):
     self.id = id
     self.username = username
-    self.password = password
     self.access = access
 
   @staticmethod
@@ -76,15 +74,14 @@ class User(UserMixin):
 
   @staticmethod
   def get_user(user_id):
-    for xuser in user_login_list:
-      if(xuser.id == user_id):
-        return xuser
+    db = db_client()
+    check_user = user_manager.check_login(db, str(user_id))
+    if(check_user):
+      return User(check_user[1], user_id, user_manager.get_access_level(db, str(user_id)))
 
   @staticmethod
-  def remove_user(user_name):
-    for xuser in user_login_list:
-      if(xuser.username == user_name):
-        user_login_list.remove(xuser)
+  def remove_user(user_id):
+    user_manager.user_login_status(db_client(), user_id, "0")
 
 class LoginForm(FlaskForm):
   email = StringField('Email', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=250)])
@@ -154,8 +151,8 @@ def signin():
         user_profile = user_manager.get_username(db, email)
         user_id = user_manager.get_user_id(db, user_profile)
         user_access_level = user_manager.get_access_level(db, str(user_id))
-        new_user = User(user_profile, form.password.data, user_id, user_access_level)
-        user_login_list.append(new_user)
+        new_user = User(user_profile, user_id, user_access_level)
+        user_manager.user_login_status(db_client(), str(user_id), "1")
         login_user(new_user, remember=form.remember.data)
         # Check if they have a /data/<DIR>, if not then create
         try:
@@ -169,7 +166,6 @@ def signin():
       message = ""
   elif(request.method == 'GET'):
     next_url = request.args.get("next")
-    # TODO: Bug with user somehoe not being authenticated or is removed from user_login_list
     if(current_user.is_authenticated):
       if(next_url):
         if(len(next_url)>0):
@@ -352,8 +348,15 @@ def request_data_form():
     # Change to just loop through request form...
     data = {}
     for id_name in request.form:
-      data[id_name] = request.form[id_name]
-      print(id_name + ", " + data[id_name])
+      if("date" in id_name):
+        print(id_name)
+        data[id_name] = (request.form[id_name]).replace("/", "-")
+      else:
+        data[id_name] = request.form[id_name]
+    data['isactive'] = 0
+    data['user_id'] = str(current_user.id)
+    data['pdf_filename'] = "test.pdf"
+    user_manager.add_request_form(db_client(), data)
 
     print("calling redirect....")
     return redirect(url_for('user_profile'))
@@ -363,6 +366,8 @@ def request_data_form():
 def user_profile():
   if(request.method == 'GET'):
     db = db_client()
+    #print(current_user.password)
+    print(current_user)
     if(str(request.args.get('type')) == "1"):
       user_id = request.args.get('user')
     else:
@@ -391,7 +396,7 @@ def user_profile():
 @app.route('/logout')
 @login_required
 def logout():
-  User.remove_user(current_user.username)
+  User.remove_user(current_user.id)
   logout_user()
   return redirect(url_for('signin'))
 

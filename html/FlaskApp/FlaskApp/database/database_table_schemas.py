@@ -5,7 +5,8 @@ def db_table_schemas():
     "user",
     "security",
     "question",
-    "profile"
+    "profile",
+    "request_data"
     ]
 
   # `Key` is table name and `value` is an array of columns
@@ -19,6 +20,7 @@ def db_table_schemas():
       ["contact_agreement", "varchar(1)", "not null", "text messages and email notifications", ""],
       ["last_login", "timestamp", "not null default current_timestamp on update current_timestamp", "last login UTC time", ""],
       ["deleted", "varchar(1)", "not null default 0", "", ""],
+      ["is_logged_in", "varchar(1)", "not null default 0", "", ""],
       ["recno", "BIGINT", " not null auto_increment", "Unique record number (row)", ""]
     ],
     "security" : [
@@ -42,7 +44,38 @@ def db_table_schemas():
       ["ref_name", "varchar(25)", "", "external_link display name", ""],
       ["user_id", "BIGINT", "not null", "link to user table not unique", "Y"],
       ["recno", "BIGINT", " not null auto_increment", "Unique record number (row)", ""]
-
-    ]
+    ],
+    "request_data": [
+      ["first_name", "varchar(30)", "not null", "", ""],
+      ["last_name", "varchar(30)", "not null", "", ""],
+      ["org_name", "varchar(50)", "not null", "", ""],
+      ["status", "varchar(8)", "not null", "", ""],
+      ["phone", "varchar(12)", "not null", "", ""],
+      ["email_address", "varchar(50)", "not null", "", ""],
+      ["address", "varchar(100)", "not null", "", ""],
+      ["data_elements", "varchar(100)", "not null", "", ""],
+      ["research_topics", "BLOB", "not null", "", ""],
+      ["authors", "BLOB", "not null", "", ""],
+      ["data_needed", "BLOB", "not null", "", ""],
+      ["data_how", "BLOB", "not null", "", ""],
+      ["data_details1_name", "varchar(30)", "not null", "", ""],
+      ["data_details1_email", "varchar(50)", "not null", "", ""],
+      ["data_details1_inst", "varchar(50)", "not null", "", ""],
+      ["data_details1_phone", "varchar(12)", "not null", "", ""],
+      ["data_details2_name", "varchar(30)", "not null", "", ""],
+      ["data_details2_email", "varchar(50)", "not null", "", ""],
+      ["data_details2_inst", "varchar(50)", "not null", "", ""],
+      ["data_details2_phone", "varchar(12)", "not null", "", ""],
+      ["data_storage", "BLOB", "not null", "", ""],
+      ["start_date", "varchar(13)", "not null", "", ""],
+      ["end_date", "", "varchar(13)", "", ""],
+      ["needed_date", "", "varchar(13)", "", ""],
+      ["destroyed_date", "", "varchar(13)", "", ""],
+      ["date_created", "timestamp", "not null default current_timestamp", "", ""],
+      ["isactive", "varchar(1)", "not null default 0", "", ""],
+      ["user_id", "BIGINT", "not null", "link to user table not unique", "Y"],
+      ["pdf_filename", "varchar(30)", "not null", "" ,""],
+      ["recno", "BIGINT", " not null auto_increment", "Unique record number (row)", ""]
+    ],
   }
   return (table_list, table_attributes)
