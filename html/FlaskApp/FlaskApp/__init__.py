@@ -13,6 +13,7 @@ from flask_bootstrap import Bootstrap
 
 #Model imports
 from model import user_manager
+from request_data import create_pdf
 
 #DB Imports MysQL
 import pymysql
@@ -357,6 +358,7 @@ def request_data_form():
     data['user_id'] = str(current_user.id)
     data['pdf_filename'] = "test.pdf"
     user_manager.add_request_form(db_client(), data)
+    create_pdf.create_form(data, APP_ROOT + "/static/data/" + str(current_user.id) + "/test.pdf")
 
     print("calling redirect....")
     return redirect(url_for('user_profile'))
