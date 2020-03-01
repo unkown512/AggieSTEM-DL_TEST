@@ -39,7 +39,7 @@
           <span class="login100-form-title p-b-48">
             <img id="image_canv" src="{{ url_for('static', filename='img/AggieSTEM-Horizontal-Maroon-1.png') }}" style="width:250px;height:50px"  alt="">
           </span>
-	        <span class="login100-form-title p-b-26">{{ error }}</span>
+	  <span class="login100-form-title p-b-26">{{ error }}</span>
           <!--data-validate = "Valid email is: a@b.c"-->
           {{ form.hidden_tag() }}
           {{ wtf.form_field(form.email) }}
@@ -62,11 +62,11 @@
             Sign Up
           </a>
         </div>
-        <div class="text-center">
+        <!--<div class="text-center">
           <a class="txt2" href="{{ url_for('recov_username') }}">
             Forgot Username?
           </a>
-        </div>
+	</div>-->
         <div class="text-center">
           <a class="txt2" href="{{ url_for('recov_pw') }}">
             Forgot Password?

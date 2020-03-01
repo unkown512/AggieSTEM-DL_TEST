@@ -82,6 +82,17 @@ def add_user(db, data):
     print('Got error {!r}, errno is {}. Rollback'.format(e, e.args[0]))
     db.rollback()
 
+def update_user_password(db, pw, user_id):
+  cursor = db.cursor()
+  sql = """ UPDATE `security` set password = '%s' where user_id='%s' """
+  try:
+    cursor.execute(sql % (generate_password_hash(pw), str(user_id)))
+  except pymysql.Error as e:
+    print('Got error {!r}, errno is {}. Rollback'.format(e, e.args[0]))
+    db.rollback()
+    return False
+  return True
+
 def validate_user(db, user_email, pw):
   cursor = db.cursor()
   # get user_id from user table. 
@@ -127,6 +138,68 @@ def update_last_login(db,user_id):
     return False
   return True  
 
+def get_id_from_email(db, email):
+  cursor = db.cursor()
+  # Get user_id from email
+  try:
+    cursor.execute("select recno from `user` where email = '%s'" % email)
+  except pymysql.Error as e:
+    print('Got error {!r}, errno is {}. Rollback'.format(e, e.args[0]))
+    db.rollback()
+    return False
+  result = cursor.fetchone()
+  if(result == None):
+    return False
+  return result[0]
+
+def update_recover_code(db, email, code):
+  cursor = db.cursor()
+  # Get user_id from email
+  try:
+    cursor.execute("select recno from `user` where email = '%s'" % email)
+  except pymysql.Error as e:
+    print('Got error {!r}, errno is {}. Rollback'.format(e, e.args[0]))
+    db.rollback()
+    return False
+  user_id = cursor.fetchone()[0]
+
+  sql = """ UPDATE `security` set code = '%s', request_new_pw='1' where user_id = '%s' limit 1"""
+  insert_tuple = (code, str(user_id))
+  try:
+    cursor.execute(sql % insert_tuple)
+    db.commit()
+  except pymysql.Error as e:
+    print('Got error {!r}, errno is {}. Rollback'.format(e, e.args[0]))
+    db.rollback()
+    return False
+  return True  
+
+def check_recover_code(db, email, code):
+  cursor = db.cursor()
+  # Get user_id from email
+  try:
+    cursor.execute("select recno from `user` where email = '%s'" % email)
+  except pymysql.Error as e:
+    print('Got error {!r}, errno is {}. Rollback'.format(e, e.args[0]))
+    db.rollback()
+    return False
+  user_id = cursor.fetchone()[0]
+
+  sql = """ select recno from `security` where user_id = '%s' and code = '%s' limit 1"""
+  insert_tuple = (str(user_id), code)
+  try:
+    cursor.execute(sql % insert_tuple)
+    db.commit()
+  except pymysql.Error as e:
+    print('Got error {!r}, errno is {}. Rollback'.format(e, e.args[0]))
+    db.rollback()
+    return False
+  result = cursor.fetchone()
+  if(result != None):
+    return True  
+  else:
+    return False
+
 def get_user_id(db, username):
   cursor = db.cursor()
   sql = """
@@ -146,7 +219,6 @@ def check_login(db, userid):
         SELECT recno, username, is_logged_in from `user` where recno = '%s' limit 1
         """
   try:
-    print(sql % userid)
     cursor.execute(sql % userid)
     db.commit()
   except pymysql.Error as e:
@@ -183,7 +255,10 @@ def get_username(db, email):
     print('Got error {!r}, errno is {}. Rollback'.format(e, e.args[0]))
     db.rollback()
     return False
-  return cursor.fetchone()[0]
+  result = cursor.fetchone()
+  if(result == None):
+    return False
+  return result[0]
 
 def authenticate_user_id(db, user_id):
   cursor = db.cursor()
@@ -248,7 +323,6 @@ def get_profile_ahref_links(db, user_id):
   return linkdata 
 
 def get_user_profile(db, user_id):
-  print("get_user_profile")
   cursor = db.cursor()
   sql = """
         SELECT phone_number, email, position, username from `user` where recno = '%s' limit 1
@@ -334,7 +408,6 @@ def check_email(db, email):
         """
   insert_tuple = (email)
   try:
-    print(sql % insert_tuple)
     cursor.execute(sql % insert_tuple)
   except pymysql.Error as e:
     print('Got error {!r}, errno is {}. Rollback'.format(e, e.args[0]))
@@ -378,7 +451,6 @@ def add_request_form(db, data):
             VALUES %s
         """
   insert_tuple = (columns, values)
-  print(insert_tuple)
   try:
     cursor.execute(sql % insert_tuple)
     db.commit()

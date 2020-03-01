@@ -5,7 +5,7 @@ from flask_bootstrap import Bootstrap
 
 #Flask forms and login mods
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, RadioField, SelectField
+from wtforms import StringField, PasswordField, BooleanField, RadioField, SelectField, SubmitField
 from wtforms.validators import InputRequired, Email, Length
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
 from wtforms import ValidationError
@@ -40,6 +40,7 @@ from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email import encoders
 import time
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 #Start flask app environment settings
 app = Flask(__name__)
@@ -75,6 +76,22 @@ class User(UserMixin):
     self.id = id
     self.username = username
     self.access = access
+
+  def get_reset_token(self, expires_sec=900):
+    s = Serializer(app.config['SECRET_KEY'], expires_sec)
+    return s.dumps({'user_id': self.id}).decode('utf-8') 
+
+  @staticmethod
+  def verify_reset_token(token):
+    print("Verify_reset_token \n\n\n\n")
+    s = Serializer(app.config['SECRET_KEY'])
+    try:
+      user_id = s.loads(token)['user_id']
+    except:
+      print("FAILED TO VERIFY")
+      return None
+    print("SUCCESS")
+    return User.get_user(user_id)
 
   @staticmethod
   def is_authenticated(self):
@@ -113,13 +130,13 @@ class RegisterForm(FlaskForm):
 class ForgotUser(FlaskForm):
   email = StringField('Email', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=250)])
 
-class newPw(FlaskForm):
-  newpw = PasswordField('New Password', validators=[InputRequired(), Length(min=8, max=80)])
-  conf_password = PasswordField('Confirm Password', validators=[InputRequired(), Length(min=8, max=80)])
+class NewPw(FlaskForm):
+  new_password = PasswordField('New Password', validators=[InputRequired(), Length(min=8, max=80)])
+  confirm_password = PasswordField('Confirm Password', validators=[InputRequired(), Length(min=8, max=80)])
 
 class ForgotPw(FlaskForm):
   email = StringField('Email', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=250)])
-  code = StringField('</br> Code', validators=[InputRequired(), Length(min=4, max=80)])
+  #code = StringField('</br> Code', validators=[InputRequired(), Length(min=4, max=80)])
 
 
 # Get function for user during session
@@ -240,19 +257,49 @@ def recov_username():
 # Validate code and then open change password page
 @app.route('/recov_pw', methods=['GET', 'POST'])
 def recov_pw():
+  if(current_user.is_authenticated):
+    return redirect(url_for('dashboard'))
   form = ForgotPw()
   if(request.method == 'GET'):
-    return render_template('recov_pw.html', form=form)
+    return render_template('recov_pw.html', form=form, message="")
   elif(request.method == 'POST'):
     email = form.email.data
-    code = form.email.data
+    db = db_client()
+    user_id = user_manager.get_id_from_email(db, email)
+    user = User.get_user(user_id)
+    if(user == False):
+      print("email does not exists")
+      return render_template('recov_pw.html', form=form, message="Invalid Code")
 
-    f = open(APP_ROOT + "/data/code.txt", 'r+')
-    curr_code = f.read()
-
-    return render_template('recov_pw.html', form=form)
+    message = "Your password reset link expires in 15 minutes: "
+    token = user.get_reset_token()
+    print(token)
+    send_email_reset(email, message, token)
+    return render_template('recov_pw.html', form=form, message="Reset Link Sent")
   else:
-    return render_template('signin.html', form=form, error="TEST")
+    return render_template('signin.html', form=form, error="")
+
+@app.route('/recov_pw/<token>', methods=['GET', 'POST'])
+def reset_pw(token):
+  if(current_user.is_authenticated):
+    return redirect(url_for('dashboard'))
+  user = User.verify_reset_token(token)
+  if(user is None):
+    print("invalid token")
+    return redirect(url_for('recov_pw'))
+  # Token is valid
+  form = NewPw()
+  if(form.validate_on_submit()):
+    new_password = form.new_password.data
+    confirm_password = form.new_password.data
+    if(new_password != confirm_password):
+      pass
+    print("UPDATING PASSWORD")
+    user_manager.update_user_password(db_client(), new_password, str(user.id))
+    return redirect(url_for('signin'))
+  return render_template("change_pw.html", form=form, message = "", token=token)
+
+
 
 @app.route('/manage_users', methods=['GET', 'POST'])
 @login_required
@@ -478,46 +525,30 @@ def send_sms():
   return("testing") 
 
 # Get email code
-@app.route('/send_email_code', methods=['POST'])
-def send_email_code():
-  if(request.method == 'GET'):
-    print("ERROR -- INVALID GET REQUEST")
-  elif(request.method == 'POST'):
-    print("TRYING TO SEND EMAIL")
-    # emailmsg
-    # txtmsg
+def send_email_reset(email, message, token):
 
-    data = request.form.to_dict()
+  #START
+  # The mail addresses and password
+  f = open("/home/aggie/.smtp/credentials", "rt")
+  email_data = f.read().split("\n")
 
-    for var in data:
-      email = var.split("\"email\":\"")
-      email = email[1].split("\"")
-      email = email[0]
-      message = var.split("\"message\":\"")
-      message = message[1].split("\"")
-      message = message[0]
-
-
-    code = random.getrandbits(64)
-    f = open(APP_ROOT + "/data/code.txt", 'r+')
-    f.write(str(code))
-    f.close()
-    message = message + ": " + str(code)
-
-    f = open("/home/aggie/.smtp/credentials", "rt")
-    data = f.read().split("\n")
-    password = data[1].split("=")[1].lstrip()
-    port = data[2].split("=")[1].lstrip()
-    sender = data[0].split("=")[1].lstrip()
-
-    context = ssl.create_default_context()
-    reciever = email
-    smtp_server = "smtp.gmail.com"
-
-
-    with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
-      server.login(sender, password)
-      server.sendmail(sender, reciever, message)
+  sender_address = email_data[0].split("=")[1].lstrip() 
+  sender_pass = email_data[1].split("=")[1].lstrip()
+  receiver_address = 'djbey@protonmail.com'
+  # Setup the MIME
+  mail_content = "Password reset link expires in 15 minutes: " + "https://138.68.45.210/recov_pw/%s"
+  mail_content = mail_content % token
+  message = MIMEMultipart()
+  message['From'] = sender_address
+  message['To'] = receiver_address
+  message['Subject'] = 'Aggie STEM DL Password Reset. NO REPLY'
+  message.attach(MIMEText(mail_content))
+  # Create SMTP session for sending the mail
+  session = smtplib.SMTP_SSL('smtp.gmail.com', email_data[2].split("=")[1].lstrip()) #use gmail with port
+  session.login(sender_address, sender_pass) #login with mail_id and password
+  text = message.as_string()
+  session.sendmail(sender_address, receiver_address, text)
+  session.quit()
   return("EMAIL SENT")
 
 # Send Emails

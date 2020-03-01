@@ -34,7 +34,8 @@
   <div class="limiter">
     <div class="container-login100">
       <div class="wrap-login100">
-        <form class="login100-form validate-form" method="POST" action="{{ url_for('recov_pw') }}">
+        <form class="login100-form validate-form" method="POST" action="">
+          <input type="hidden" name="token" id="token" value="{{token}}" />
           <span class="login100-form-title p-b-26">
             Account Recovery
           </span>
@@ -44,13 +45,14 @@
            <span class="login100-form-title p-b-26">{{ message }}</span>
           <!--data-validate = "Valid email is: a@b.c"-->
           {{ form.hidden_tag() }}
-          {{ wtf.form_field(form.email) }}
+          {{ wtf.form_field(form.new_password) }}
+          {{ wtf.form_field(form.confirm_password) }}
           <div class="container-login100-form-btn">
             <div class="wrap-login100-form-btn">
               <div class="login100-form-bgbtn"></div>
-              <button id='request_url' class="login100-form-btn">
-                Request Password Reset
-              </button>
+              <button id='change_pass' class="login100-form-btn">
+                Reset Password
+        </button>
             </div>
           </div>
           </form>
@@ -60,8 +62,9 @@
   
 
   <div id="dropDownSelect1"></div>
-
-  <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js')}}"></script>
+  
+<!--=========================================================================================================-->
+    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js')}}"></script>
 <!--=========================================================================================================-->
 <!--<script src="{{ url_for('static', filename='vendor/signin/animsition/js/animsition.min.js')}}"></script>-->
 <!--=========================================================================================================-->
