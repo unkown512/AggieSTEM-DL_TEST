@@ -31,6 +31,7 @@ def db_table_schemas():
       ["request_new_pw", "varchar(1)", "not null default 0", "flag to change password", ""],
       ["user_id", "BIGINT", "not null UNIQUE", "FK to user table", "Y"],
       ["access_level", "SMALLINT", "not null default 0", "", ""],
+      ["code", "varchar(30)", "not null", "", ""],
       ["recno", "BIGINT", " not null auto_increment", "Unique record number (row)", ""]
     ],
     "question" : [
@@ -75,6 +76,7 @@ def db_table_schemas():
       ["isactive", "varchar(1)", "not null default 0", "", ""],
       ["user_id", "BIGINT", "not null", "link to user table not unique", "Y"],
       ["pdf_filename", "varchar(30)", "not null", "" ,""],
+      ["approved", "varchar(1)", "not null default 0", "", ""],
       ["recno", "BIGINT", " not null auto_increment", "Unique record number (row)", ""]
     ],
   }
