@@ -2,9 +2,13 @@ DONE:user profile directories when created = data/user_id
 DONE:user profile upload images 
 DONE:user profile upload link information
 DONE:add all nav options to each page
-
 DONE: get request data access form data
-generate pdf from request data access form data
+DONE: create request form db table
+DONE: insert data into request form db table
+DONE: FIX REDIRECT LOGIN WITH LOGIN TABLA
+
+DONE: generate pdf from request data access form data
+
 send data to senior doc
 add jquery validation form js to request_data_form
 
