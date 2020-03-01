@@ -33,6 +33,13 @@ import random
 import os
 import smtplib, ssl
 import boto3
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart
+from email import encoders
+import time
 
 #Start flask app environment settings
 app = Flask(__name__)
@@ -358,7 +365,34 @@ def request_data_form():
     data['user_id'] = str(current_user.id)
     data['pdf_filename'] = "test.pdf"
     user_manager.add_request_form(db_client(), data)
-    create_pdf.create_form(data, APP_ROOT + "/static/data/" + str(current_user.id) + "/test.pdf")
+    filename = "request_form" + str(current_user.id) + "_" + str(time.strftime("%d-%m-%Y")) + ".pdf"
+    create_pdf.create_form(data, APP_ROOT + "/static/data/" + str(current_user.id) + "/"+ filename)
+
+    # The mail addresses and password
+    f = open("/home/aggie/.smtp/credentials", "rt")
+    data = f.read().split("\n")
+
+    sender_address = data[0].split("=")[1].lstrip() 
+    sender_pass = data[1].split("=")[1].lstrip()
+    receiver_address = 'djbey@protonmail.com'
+    # Setup the MIME
+    mail_content = "This is a test email"
+    message = MIMEMultipart()
+    message['From'] = sender_address
+    message['To'] = receiver_address
+    message['Subject'] = 'A test mail sent by Python. It has an attachment.'
+    message.attach(MIMEText(mail_content))
+    with open(APP_ROOT + "/static/data/" + str(current_user.id) + "/test.pdf", 'rb') as f:
+      attach_file = MIMEApplication(f.read(), Name=filename)
+    attach_file['Content-Disposition'] = 'attachment; filename="%s"' % filename
+    message.attach(attach_file)
+    # Create SMTP session for sending the mail
+    session = smtplib.SMTP_SSL('smtp.gmail.com', data[2].split("=")[1].lstrip()) #use gmail with port
+    session.login(sender_address, sender_pass) #login with mail_id and password
+    text = message.as_string()
+    session.sendmail(sender_address, receiver_address, text)
+    session.quit()
+    print('Mail Sent')
 
     print("calling redirect....")
     return redirect(url_for('user_profile'))
