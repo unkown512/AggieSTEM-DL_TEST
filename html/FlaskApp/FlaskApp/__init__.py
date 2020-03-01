@@ -268,7 +268,7 @@ def manage_users():
       user_data['username'] = user[3] 
       user_data['uid'] = str(user[4])
       user_data['position'] = user[2]
-      user_data['access_level'] = user[2]
+      user_data['access_level'] = user_manager.get_access_level(db, str(user[4])) 
       user_data['email'] = user[1]
       user_data['phone'] = user[0]
       user_data['groups'] = 'TODO'
@@ -344,7 +344,7 @@ def message_users():
   return render_template('index.html', user=current_user.username, error="TEST", 
       access_level=user_manager.get_access_level(db_client(), current_user.id))
 
-@app.route('/request_data_from', methods=['GET', 'POST'])
+@app.route('/request_data_form', methods=['GET', 'POST'])
 @login_required
 def request_data_form():
   if(request.method == 'GET'):
@@ -561,7 +561,7 @@ def table_reload():
     user_data['username'] = user[3]
     user_data['uid'] = str(user[4])
     user_data['position'] = user[2]
-    user_data['access_level'] = user[2]
+    user_data['access_level'] = user_manager.get_access_level(db, str(user[4])) 
     user_data['email'] = user[1]
     user_data['phone'] = user[0]
     user_data['groups'] = 'TODO'
