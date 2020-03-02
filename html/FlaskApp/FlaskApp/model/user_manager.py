@@ -59,10 +59,10 @@ def add_user(db, data):
   # security table insert. Q1-3 is empty for now
   user_id = str(get_user_id(db, username))
   sql = """ INSERT INTO `security`(user_id, password, question1, question2,
-            question3) 
-            VALUES ('%s', '%s', '%s', '%s', '%s')
+            question3, code) 
+            VALUES ('%s', '%s', '%s', '%s', '%s', '%s')
         """
-  insert_tuple = (user_id, password_hash, "", "", "")
+  insert_tuple = (user_id, password_hash, "", "", "", "")
   try:
     cursor.execute(sql % insert_tuple)
     db.commit()
@@ -99,9 +99,12 @@ def validate_user(db, user_email, pw):
   sql = """ SELECT recno from `user` where email = '%s' 
         """
   insert_tuple = (str(user_email))
+  print(insert_tuple)
   try:
+    print(sql % insert_tuple)
     cursor.execute(sql % insert_tuple)
     user_id = str(cursor.fetchone()[0])
+    print(user_id)
   except pymysql.Error as e:
     print('Got error {!r}, errno is {}. Rollback'.format(e, e.args[0]))
     db.rollback()
