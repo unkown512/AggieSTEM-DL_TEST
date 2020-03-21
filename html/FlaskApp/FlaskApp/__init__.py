@@ -49,14 +49,15 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 #TODO: Change hardcoded PW
 def db_client():
-  f = open("/home/aggie/.mysql/credentials", "rt")
-  data = f.read().split("\n")
-  host = data[0].split("=")[1].lstrip()
-  user = data[1].split("=")[1].lstrip()
-  pw = data[2].split("=")[1].lstrip()
-  database = data[3].split("=")[1].lstrip()
+  # f = open("/home/aggie/.mysql/credentials", "rt")
+  # data = f.read().split("\n")
+  # host = data[0].split("=")[1].lstrip()
+  # user = data[1].split("=")[1].lstrip()
+  # pw = data[2].split("=")[1].lstrip()
+  # database = data[3].split("=")[1].lstrip()
   try:
-    db = pymysql.connect(host, user, pw, database)
+    # db = pymysql.connect(host, user, pw, database)
+    db = pymysql.connect("localhost", "xuluming", "xuluming", "aggiestemdl")
   except pymysql.Error as e:
     print('Got error {!r}, errno is {}. Rollback'.format(e, e.args[0]))
     return False
