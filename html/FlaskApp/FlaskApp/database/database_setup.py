@@ -4,7 +4,10 @@ import pymysql
 from database_table_schemas import db_table_schemas
 
 # Open database connection
-db = pymysql.connect("localhost","aggie","Awsedrft22$","aggiestemdl")
+user = "xuluming"
+password = "xuluming"
+# db = pymysql.connect("localhost","aggie","Awsedrft22$","aggiestemdl")
+db = pymysql.connect("localhost",user,password,"aggiestemdl")
 
 # Initlaize cursor object to execute queries
 cursor = db.cursor()
