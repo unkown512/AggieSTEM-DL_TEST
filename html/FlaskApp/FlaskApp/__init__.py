@@ -606,12 +606,12 @@ def serach_keywords():
     db = db_client()
     cursor = db.cursor()
     user_id = session['user_id']
-    sql = 'select name from dataset where id in (select dataset_id from dataset_access where user_id=%s and status=%s)'
+    sql = 'select * from dataset where id in (select dataset_id from dataset_access where user_id=%s and status=%s)'
     cursor.execute(sql,(user_id, 'granted',))
     all_granted_dataset = cursor.fetchall()
     print("all granted dataset:{}".format(all_granted_dataset))
 
-    sql = 'select name from dataset where name like %s and id in (select dataset_id from dataset_access where user_id=%s and status=%s)'
+    sql = 'select * from dataset where name like %s and id in (select dataset_id from dataset_access where user_id=%s and status=%s)'
     cursor.execute(sql, ('%{}%'.format(keywords),'3','granted',))
     name_like_dataset = cursor.fetchall()
     print(name_like_dataset)
