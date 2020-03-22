@@ -1,11 +1,14 @@
 #!/usr/bin/python3
 
+import json
 import pymysql 
 from database_table_schemas import db_table_schemas
 
 # Open database connection
-user = "xuluming"
-password = "xuluming"
+with open("./user_info.json", 'r') as load_json:
+    load_dict = json.load(load_json)
+    user = load_dict['user']
+    password = load_dict['password']
 # db = pymysql.connect("localhost","aggie","Awsedrft22$","aggiestemdl")
 db = pymysql.connect("localhost",user,password,"aggiestemdl")
 

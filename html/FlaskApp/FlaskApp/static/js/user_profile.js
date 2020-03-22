@@ -32,7 +32,7 @@ $(document).ready(function() {
         console.log("email success");
         }, function(error) {
         console.log(error);
-        }
+       }
       });
 
     }
@@ -51,4 +51,26 @@ $(document).ready(function() {
       });
     }
   }); // End send_create_msg
+
+  $('#search_keywords').on('click', function() {
+    let keywords = $("#keywords").val();
+    if (keywords.length == 0) {
+      alert("Please enter the keywords.");
+    } else if ( message.length > 140) {
+      alert("Your keywords are too long.");
+    } else {
+      $.ajax({
+        url: "/search_keywords",
+        type: "POST",
+        data: { "keywords": JSON.stringify(keywords) },
+        success: function() {
+          $("#keywords").val('');
+          console.log("keywords success");
+        }, function(error) {
+          console.log(error);
+        }
+      });
+    }
+  }); // End search keywords
+	
 }); // End of document on ready

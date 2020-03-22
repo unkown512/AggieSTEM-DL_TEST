@@ -155,6 +155,7 @@
                   </div>
                 </div>
               </div>
+	      <a id="btn-search" class="btn btn-primary btn-block js-scroll-trigger text-white" (click)="clearModal()" data-toggle="modal" data-target="#search">Search Data</a>
               <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                 <div class="row">
                   <div class="col-md-6">
@@ -209,6 +210,36 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
             <button id="send_sms_email" type="button" class="btn btn-primary" (click)="openModal()" data-dismiss="modal">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT POPUP -->
+    <div class="modal fade" id="search" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="contact">Search Data {{user}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+		    <p for="msj">This will search the datas that {{user}} owns according to the keywords you provide.
+              </p>
+            </div>
+            <div class="form-group">
+              <div class="form-group">
+                <label for="txtKeywords">Keywords</label>
+                <textarea name="keywords" rows="1" id="keywords" style="min-width:100%"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button id="search_keywords" type="button" class="btn btn-primary" (click)="openModal()" data-dismiss="modal">Search</button>
           </div>
         </div>
       </div>

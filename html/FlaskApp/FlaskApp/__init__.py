@@ -56,8 +56,11 @@ def db_client():
   # pw = data[2].split("=")[1].lstrip()
   # database = data[3].split("=")[1].lstrip()
   try:
-    # db = pymysql.connect(host, user, pw, database)
-    db = pymysql.connect("localhost", "xuluming", "xuluming", "aggiestemdl")
+    with open(APP_ROOT+"/database/user_info.json", 'r') as load_json:
+        load_dict = json.load(load_json)
+        mysql_user = load_dict['user']
+        mysql_password = load_dict['password']
+    db = pymysql.connect("localhost", mysql_user, mysql_password, "aggiestemdl")
   except pymysql.Error as e:
     print('Got error {!r}, errno is {}. Rollback'.format(e, e.args[0]))
     return False
@@ -583,6 +586,17 @@ def send_email():
       server.sendmail(sender, reciever, message)
     return("EMAIL SENT")
 
+# search keywords
+@app.route('/search_keywords', methods=['post'])
+@login_required
+def serach_keywords():
+  if(request.method == 'GET'):
+    print("ERROR -- INVALID GET REQUEST")
+    return redirect(url_for('dashboard'))
+  elif(request.method == 'POST'):
+    print("trying to search keywords")
+    return("SEARCH COMPLETE")
+
 @app.route('/table_reload', methods=['GET', 'POST'])
 @login_required
 def table_reload():
@@ -607,6 +621,6 @@ def table_reload():
 
 if __name__ == "__main__":
   # IP = '128.194.140.214'
-  IP = '127.0.0.1'
+  IP = 'localhost'
   app.config['SECRET_KEY'] = "SUPPOSED-to-be-a-secret"
   app.run(host = os.getenv('IP',IP), port=int(os.getenv('PORT',8080)), debug=True)

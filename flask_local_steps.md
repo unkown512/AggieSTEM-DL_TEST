@@ -12,10 +12,21 @@ change username and password in database_setup.py to local user.
 
 1. install mysql
 
-2.configure user based on `https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-18-04` 
+2. configure user based on `https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-18-04` 
 
 3. create table aggiestemdl
-4. run database_setup.py to initialize schema
+
+4. new a json file `AggieSTEM-DL-PRODUCTION/html/FlaskApp/FlaskApp/database/user_info.json` which contains your mysql username and password:
+
+```
+{
+	"user": your username,
+	"password": your password
+}
+
+```
+
+5. run database_setup.py to initialize schema
 
 ## run flask app locally
 
