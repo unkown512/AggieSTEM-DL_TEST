@@ -35,3 +35,36 @@ change username and password in database_setup.py to local user.
 2. change ip to localhost
 3. manually visit route other than localhost:8080/, such as localhost:8080/signup
 
+## Query dataset by keyword
+1. manage data source to local mysql database
+
+schema structure:
+    user has many datasets
+    dataset has many granted users
+    make inner table as `id, (user.id, dataset.id)`
+
+* schema `request_data` has column `approved`, possibly use this in the future.  Currently the schema has unnecessary columns.  Use new schema to simplify implementation.
+
+* dataset:
+  * id, primary key
+  * name, char
+  * description, char
+  * upload time, datetime,
+  * update time, datetime, # for dataset update display feature
+
+* dataset_access:
+  * id, primary key
+  * dataset.id, foreign key from schema `dataset.id`
+  * user.id, foreign key from schema `profile.user_id`
+  * status, char, 'requested', 'granted', 'expired'
+  * (possibly other datetime info on the above status)
+
+### seed dataset
+* execute seed_dataset.sql
+
+
+
+## Error handling
+* On foreign key creation error 1215, check if referenced table is of engine `MyISAM`.  If so, convert to `InnoDB`.  `ALTER TABLE user ENGINE = InnoDB`;
+    * from: https://stackoverflow.com/questions/18391034/cannot-resolve-table-name-close-to
+
