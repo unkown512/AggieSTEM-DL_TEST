@@ -19,7 +19,7 @@ from request_data import create_pdf
 import pymysql
 
 #
-from flask import request
+from flask import request, g
 from flask import render_template, redirect
 from flask import url_for
 from flask import send_file
@@ -41,6 +41,8 @@ from email.mime.multipart import MIMEMultipart
 from email import encoders
 import time
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+
+from flask import session
 
 #Start flask app environment settings
 app = Flask(__name__)
@@ -83,7 +85,7 @@ class User(UserMixin):
 
   def get_reset_token(self, expires_sec=900):
     s = Serializer(app.config['SECRET_KEY'], expires_sec)
-    return s.dumps({'user_id': self.id}).decode('utf-8') 
+    return s.dumps({'user_id': self.id}).decode('utf-8')
 
   @staticmethod
   def verify_reset_token(token):
@@ -175,6 +177,7 @@ def signin():
       pw = form.password.data
       db = db_client()
 
+
       if(user_manager.validate_user(db, email, pw)):
         # Change user_profile to recno
         user_profile = user_manager.get_username(db, email)
@@ -184,6 +187,8 @@ def signin():
         user_manager.user_login_status(db_client(), str(user_id), "1")
         login_user(new_user, remember=form.remember.data)
         # Check if they have a /data/<DIR>, if not then create
+        session.clear()
+        session['user_id'] = str(user_id)
         try:
           os.makedirs(APP_ROOT+"/static/data/"+str(user_id))
         except:
@@ -212,11 +217,11 @@ def upload_profile_image():
     # Should be only one...
     print("GOT USER FILE")
     print(user_file)
-    file_dest = file_dir + "/profile" 
+    file_dest = file_dir + "/profile"
     user_file.save(file_dest)
     break
   print("FILE SAVED")
-  return redirect(url_for('user_profile')) 
+  return redirect(url_for('user_profile'))
 
 # Registration page
 @app.route('/signup', methods=['GET', 'POST'])
@@ -236,7 +241,7 @@ def signup():
       #unique_number = ''  #'#' + str(random.randrange(10000)).zfill(4)
       smap = {'T': 1, 'F': 0} #statement
       if(not user_manager.check_email(db, form.email.data) and not user_manager.check_phone_number(db, form.phone.data)):
-        user_data = [form.username.data, form.password.data, form.email.data, form.position.data, 
+        user_data = [form.username.data, form.password.data, form.email.data, form.position.data,
           form.phone.data, smap[form.privacy_agreement.data], smap[form.contact_agreement.data]]
         user_manager.add_user(db, user_data)
 
@@ -316,15 +321,15 @@ def manage_users():
     temp = []
     for user in user_list:
       user_data = {}
-      user_data['username'] = user[3] 
+      user_data['username'] = user[3]
       user_data['uid'] = str(user[4])
       user_data['position'] = user[2]
-      user_data['access_level'] = user_manager.get_access_level(db, str(user[4])) 
+      user_data['access_level'] = user_manager.get_access_level(db, str(user[4]))
       user_data['email'] = user[1]
       user_data['phone'] = user[0]
       user_data['groups'] = 'TODO'
       user_data['last_login'] = user[5].strftime("%Y-%M-%d @ %H:%M:%S")
-      user_data['deleted'] = user[6] 
+      user_data['deleted'] = user[6]
       temp.append(user_data)
     data = {}
     data['data'] = temp
@@ -357,7 +362,7 @@ def manage_users():
 
       user_manager.update_user(db, user_id, new_user_data)
       return response_data
-      
+
 
 @app.route('/manage_groups')
 @login_required
@@ -392,7 +397,7 @@ def message_users():
       access_level=user_manager.get_access_level(db_client(), current_user.id))
   elif(request.method == 'POST'):
     return render_template('message_users.html', user=current_user.username, access_level=current_user.access)
-  return render_template('index.html', user=current_user.username, error="TEST", 
+  return render_template('index.html', user=current_user.username, error="TEST",
       access_level=user_manager.get_access_level(db_client(), current_user.id))
 
 @app.route('/request_data_form', methods=['GET', 'POST'])
@@ -415,7 +420,7 @@ def request_data_form():
     data['isactive'] = 0
     data['user_id'] = str(current_user.id)
     filename = "request_form" + str(current_user.id) + "_" + str(time.strftime("%d-%m-%Y")) + ".pdf"
-    data['pdf_filename'] = filename 
+    data['pdf_filename'] = filename
     user_manager.add_request_form(db_client(), data)
     create_pdf.create_form(data, APP_ROOT + "/static/data/" + str(current_user.id) + "/"+ filename)
 
@@ -423,7 +428,7 @@ def request_data_form():
     f = open("/home/aggie/.smtp/credentials", "rt")
     email_data = f.read().split("\n")
 
-    sender_address = email_data[0].split("=")[1].lstrip() 
+    sender_address = email_data[0].split("=")[1].lstrip()
     sender_pass = email_data[1].split("=")[1].lstrip()
     receiver_address = 'djbey@protonmail.com'
     # Setup the MIME
@@ -461,7 +466,7 @@ def user_profile():
     else:
       user_id = current_user.id
     userdata = user_manager.get_user_profile(db, str(user_id))
-    
+
     if(userdata):
       username = userdata['username']
       phonenumber = userdata['phone']
@@ -470,16 +475,16 @@ def user_profile():
       position_map = {'3': "Director", '2': "Senior Doc", '1': "Researcher"}
       position = position_map.get(position, 0)
 
-      return render_template('user_profile.html', user=username, email=email, 
-        phonenumber=phonenumber, position=position, 
+      return render_template('user_profile.html', user=username, email=email,
+        phonenumber=phonenumber, position=position,
         profile_img="static/data/"+str(user_id)+"/profile",
         user_links = user_manager.get_profile_ahref_links(db, str(user_id)),
         access_level = user_manager.get_access_level(db_client(), current_user.id))
   elif(request.method=='POST'):
     data = {}
     return render_template('user_profile.html', data=data)
-    
-  return redirect(url_for('dashboard')) 
+
+  return redirect(url_for('dashboard'))
 
 @app.route('/logout')
 @login_required
@@ -526,7 +531,7 @@ def send_sms():
     client.delete_topic(TopicArn=topic_arn)
     print("Message Sent")
     #flash("Message sent") # Doesnt work
-  return("testing") 
+  return("testing")
 
 # Get email code
 def send_email_reset(email, message, token):
@@ -536,7 +541,7 @@ def send_email_reset(email, message, token):
   f = open("/home/aggie/.smtp/credentials", "rt")
   email_data = f.read().split("\n")
 
-  sender_address = email_data[0].split("=")[1].lstrip() 
+  sender_address = email_data[0].split("=")[1].lstrip()
   sender_pass = email_data[1].split("=")[1].lstrip()
   receiver_address = 'djbey@protonmail.com'
   # Setup the MIME
@@ -586,6 +591,7 @@ def send_email():
       server.sendmail(sender, reciever, message)
     return("EMAIL SENT")
 
+from flask import jsonify
 # search keywords
 @app.route('/search_keywords', methods=['post'])
 @login_required
@@ -594,8 +600,26 @@ def serach_keywords():
     print("ERROR -- INVALID GET REQUEST")
     return redirect(url_for('dashboard'))
   elif(request.method == 'POST'):
-    print("trying to search keywords")
-    return("SEARCH COMPLETE")
+    keywords:str = request.form['keywords']
+    keywords = keywords.replace('"', '')
+    print("user:{}, search keywords:{}".format(session['user_id'], keywords))
+    db = db_client()
+    cursor = db.cursor()
+    user_id = session['user_id']
+    sql = 'select name from dataset where id in (select dataset_id from dataset_access where user_id=%s and status=%s)'
+    cursor.execute(sql,(user_id, 'granted',))
+    all_granted_dataset = cursor.fetchall()
+    print("all granted dataset:{}".format(all_granted_dataset))
+
+    sql = 'select name from dataset where name like %s and id in (select dataset_id from dataset_access where user_id=%s and status=%s)'
+    cursor.execute(sql, ('%{}%'.format(keywords),'3','granted',))
+    name_like_dataset = cursor.fetchall()
+    print(name_like_dataset)
+    print("name like dataset:{}".format(name_like_dataset))
+
+    g.all_granted_dataset = all_granted_dataset
+    g.name_like_dataset = name_like_dataset
+    return jsonify([all_granted_dataset, name_like_dataset])
 
 @app.route('/table_reload', methods=['GET', 'POST'])
 @login_required
@@ -608,7 +632,7 @@ def table_reload():
     user_data['username'] = user[3]
     user_data['uid'] = str(user[4])
     user_data['position'] = user[2]
-    user_data['access_level'] = user_manager.get_access_level(db, str(user[4])) 
+    user_data['access_level'] = user_manager.get_access_level(db, str(user[4]))
     user_data['email'] = user[1]
     user_data['phone'] = user[0]
     user_data['groups'] = 'TODO'

@@ -68,3 +68,6 @@ schema structure:
 * On foreign key creation error 1215, check if referenced table is of engine `MyISAM`.  If so, convert to `InnoDB`.  `ALTER TABLE user ENGINE = InnoDB`;
     * from: https://stackoverflow.com/questions/18391034/cannot-resolve-table-name-close-to
 
+* Return keywords from request.form[] is of format '""'. remove additional quote to avoid SQL query param concatenation error.
+
+
