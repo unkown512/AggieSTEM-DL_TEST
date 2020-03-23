@@ -610,7 +610,8 @@ def serach_keywords():
     print("all granted dataset:{}".format(all_granted_dataset))
 
     sql = 'select * from dataset where name like %s and id in (select dataset_id from dataset_access where user_id=%s and status=%s)'
-    cursor.execute(sql, ('%{}%'.format(keywords),'3','granted',))
+    # print(cursor.mogrify(sql, ('%{}%'.format(keywords),user_id,'granted',)))
+    cursor.execute(sql, ('%{}%'.format(keywords),user_id,'granted',))
     name_like_dataset = cursor.fetchall()
     print(name_like_dataset)
     print("name like dataset:{}".format(name_like_dataset))
