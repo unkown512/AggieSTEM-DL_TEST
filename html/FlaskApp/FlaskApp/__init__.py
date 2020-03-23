@@ -187,8 +187,6 @@ def signin():
         user_manager.user_login_status(db_client(), str(user_id), "1")
         login_user(new_user, remember=form.remember.data)
         # Check if they have a /data/<DIR>, if not then create
-        session.clear()
-        session['user_id'] = str(user_id)
         try:
           os.makedirs(APP_ROOT+"/static/data/"+str(user_id))
         except:
