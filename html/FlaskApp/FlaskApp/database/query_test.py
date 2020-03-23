@@ -2,9 +2,9 @@
 # @date 3/22/20 5:26 PM
 
 import pymysql
-import json
+import os, json
 
-with open("./user_info.json", 'r') as load_json:
+with open(os.path.dirname(os.path.abspath(__file__))+"/user_info.json", 'r') as load_json:
     load_dict = json.load(load_json)
     user = load_dict['user']
     password = load_dict['password']
