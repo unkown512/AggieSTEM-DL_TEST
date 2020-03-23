@@ -217,7 +217,7 @@
 
     <!-- CONTACT POPUP -->
     <div class="modal fade" id="search" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
+      <div class="modal-dialog" style="max-width:800px" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="contact">Search Data {{user}}</h5>
@@ -236,10 +236,14 @@
                 <textarea name="keywords" rows="1" id="keywords" style="min-width:100%"></textarea>
               </div>
             </div>
+	    <div id="search-result-wrapper">
+		    <p>The search result for <span id="result-keyword-show"></span>:</p> 
+		    <p> <span class="search-result-valid">&nbsp&nbsp&nbsp&nbsp</span> contains keywords <span class="search-result-other">&nbsp&nbsp&nbsp&nbsp</span> others</p>
+	    </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <button id="search_keywords" type="button" class="btn btn-primary" (click)="openModal()" data-dismiss="modal">Search</button>
+            <button id="search_keywords" type="button" class="btn btn-primary" (click)="openModal()">Search</button>
           </div>
         </div>
       </div>

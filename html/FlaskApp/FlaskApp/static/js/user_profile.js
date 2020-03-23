@@ -63,9 +63,10 @@ $(document).ready(function() {
         url: "/search_keywords",
         type: "POST",
         data: { "keywords": JSON.stringify(keywords) },
-        success: function() {
+        success: function(json) {
           $("#keywords").val('');
-          console.log("keywords success");
+	  document.getElementById("result-keyword-show").innerHTML = keywords;
+	  callback_search(json);
         }, function(error) {
           console.log(error);
         }
@@ -74,3 +75,36 @@ $(document).ready(function() {
   }); // End search keywords
 	
 }); // End of document on ready
+
+function callback_search(json) {
+  tableNode=document.createElement("table");
+  tableNode.setAttribute("id","search-result-table");
+  tableNode.setAttribute("border","1");
+  if (json[1].length == 0) { alert("No records contain such keyword!"); }
+  let validId = new Set();
+  for(let idx = 0; idx < json[1].length; idx++) {
+    let row_data = json[1][idx];
+    let trNode = tableNode.insertRow();
+    trNode.setAttribute("class", "search-result-valid");
+    for(let idx2 = 0; idx2 < row_data.length; ++idx2) {
+      let tdNode = trNode.insertCell();
+      tdNode.innerHTML = row_data[idx2];
+    }
+    validId.add(row_data[0]); // record unique id
+  }
+  for (let idx = 0; idx < json[0].length; ++idx) {
+    let row_data = json[0][idx];
+    if (validId.has(row_data[0])) { continue; }
+    let trNode = tableNode.insertRow();
+    trNode.setAttribute("class", "search-result-other");
+    for(let idx2 = 0; idx2 < row_data.length; ++idx2) {
+      let tdNode = trNode.insertCell();
+      tdNode.innerHTML = row_data[idx2];
+    }
+  }
+  let tableWrapper = document.getElementById("search-result-wrapper");
+  tableWrapper.setAttribute("style", "display: block");
+  if (tableWrapper.children.length > 1) { tableWrapper.removeChild(tableWrapper.lastChild); }
+  tableWrapper.appendChild(tableNode);
+}
+
