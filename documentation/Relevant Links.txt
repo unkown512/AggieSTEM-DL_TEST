@@ -1,0 +1,4 @@
+Pivotal Tracker: https://www.pivotaltracker.com/n/projects/2435764
+GitHub Repo: https://github.com/unkown512/AggieSTEM-DL-PRODUCTION/tree/luming_dev
+Heroku deployment: None, the project is not deployed through Heroku.
+Iteration 1 Submission Document: https://docs.google.com/document/d/1kxulYkt7tcXlpcfAZ81_RnBhPCE4uBc3GcEnaNRadBc/edit#
