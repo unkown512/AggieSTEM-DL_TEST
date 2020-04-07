@@ -3,6 +3,8 @@
 from selenium.webdriver import Chrome
 from selenium.webdriver.support.ui import Select
 import re
+from selenium.webdriver.remote.webelement import WebElement
+from time import sleep
 
 
 def access_test(driver: Chrome):
@@ -102,3 +104,27 @@ def user_profile_test(driver: Chrome) -> None:
     driver.get(target_site)
     keywords = 'coco'
     search_test(driver, keywords)
+
+
+def fill_text_field(parent: WebElement or Chrome, id: str, content: str) -> None:
+    text_field = parent.find_element_by_id(id)
+    text_field.clear()
+    text_field.send_keys(content)
+
+
+def fill_request_form_test(driver: Chrome, form_info: dict) -> None:
+    target_site = 'localhost:8080/request_data_form'
+    driver.get(target_site)
+
+    for id, content in form_info.items():
+        fill_text_field(driver, id, content)
+    else:
+        submit = driver.find_element_by_xpath("//button[contains(text(), 'Submit')]")
+        submit.click()
+        accept = driver.find_element_by_id('accept_display_terms')
+        sleep(1)
+        if accept.is_displayed():
+            accept.click()
+            assert 'user_profile' in driver.current_url
+        else:
+            print('hidden element interaction not handled by time wait.')

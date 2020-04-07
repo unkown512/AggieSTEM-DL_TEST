@@ -84,7 +84,7 @@
               </div><br><br><br>
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-4">
             <div class="profile-head">
               <h5>
                 {{user}}
@@ -103,6 +103,9 @@
               </ul>
             </div>
           </div>
+            <div class="col-md-2">
+                <a id="btn-request-history" href="{{url_for('request_history')}}" class="btn btn-primary btn-block ">Request History</a>
+            </div>
           <div class="col-md-2">
             <a id="btn-request" href="{{url_for('request_data_form')}}" class="btn btn-primary btn-block ">Request Data</a>
           </div>

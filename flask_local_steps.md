@@ -70,4 +70,19 @@ schema structure:
 
 * Return keywords from request.form[] is of format '""'. remove additional quote to avoid SQL query param concatenation error.
 
+April. 4. 2020
+implement feature related to request form
+1. user fill in request form
+    * add auto fill form script (done)
+2. user display submitted request form information (done)
+3. admin view request forms from each user
+4. admin accept/reject request form, grant/refuse user access to a certain dataset
+   * add link to dataset
+   * host dataset files on server
+   * select file on server
+5. user see admin action reflected on their page, status update on the request, and link to download the dataset
+
+
+changed columns with blob type to text type in request_data schema, to make it easier to display on front-end.
+
 

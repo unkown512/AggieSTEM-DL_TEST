@@ -43,6 +43,7 @@ import time
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from flask import session
+from typing import List
 
 # Start flask app environment settings
 app = Flask(__name__)
@@ -63,7 +64,11 @@ def db_client():
             load_dict = json.load(load_json)
             mysql_user = load_dict['user']
             mysql_password = load_dict['password']
-        db = pymysql.connect("localhost", mysql_user, mysql_password, "aggiestemdl")
+        db = pymysql.connect(host="localhost",
+                             user=mysql_user,
+                             passwd=mysql_password,
+                             db="aggiestemdl",
+                             charset='utf8')
     except pymysql.Error as e:
         print('Got error {!r}, errno is {}. Rollback'.format(e, e.args[0]))
         return False
@@ -271,6 +276,100 @@ def signup():
     return render_template("signup.html", form=RegisterForm(), error=message)
 
 
+@app.route('/request_history/<int:recno>/delete', methods=['POST'])
+def delete_request(recno: int):
+    if request.method == 'POST':
+        print('IN DELETE REQUEST\n\n')
+        db = db_client()
+        sql = 'delete from request_data where recno=%s'
+        cursor = db.cursor()
+        cursor.execute(sql, (recno,))
+        db.commit()
+        return redirect(url_for('request_history'))
+    else:
+        return 'delete request not post, recno={}'.format(recno)
+
+
+@app.route('/request_history', methods=['GET'])
+@login_required
+def request_history():
+    if request.method == 'GET':
+        user_id = session['user_id']
+        db = db_client()
+        cursor = db.cursor(pymysql.cursors.DictCursor)
+        sql = 'select * from request_data where user_id=%s'
+        cursor.execute(sql, (user_id,))
+        rows: List[dict] = cursor.fetchall()
+        print("request history:", rows)
+
+
+        for record in rows:
+            for key, value in record.items():
+                record[key] = value if value not in ('', b'') else 'N/A'
+        else:
+            pass
+        return render_template('request_history.html', data=rows)
+    else:
+        return redirect(url_for('page_not_found'))
+
+
+@app.route('/request_data_form', methods=['GET', 'POST'])
+@login_required
+def request_data_form():
+    if (request.method == 'GET'):
+        # Load new form
+        return render_template('request_data_form.html')
+    elif (request.method == 'POST'):
+        # Get form data
+        print("Get form data..WTF")
+        # Change to just loop through request form...
+        data = {}
+        for id_name in request.form:
+            if ("date" in id_name):
+                print(id_name)
+                data[id_name] = (request.form[id_name]).replace("/", "-")
+            else:
+                data[id_name] = request.form[id_name]
+        data['isactive'] = 0
+        data['user_id'] = str(current_user.id)
+        filename = "request_form" + str(current_user.id) + "_" + str(time.strftime("%d-%m-%Y")) + ".pdf"
+        data['pdf_filename'] = filename
+        user_manager.add_request_form(db_client(), data)
+
+        # disable email function temporarily
+        if False:
+            create_pdf.create_form(data, APP_ROOT + "/static/data/" + str(current_user.id) + "/" + filename)
+            # The mail addresses and password
+            f = open("/home/aggie/.smtp/credentials", "rt")
+            email_data = f.read().split("\n")
+            sender_address = email_data[0].split("=")[1].lstrip()
+            sender_pass = email_data[1].split("=")[1].lstrip()
+            receiver_address = 'djbey@protonmail.com'
+            # Setup the MIME
+            mail_content = "The attached document contains the recently created data request by: " + data[
+                'first_name'] + ", "
+            mail_content += data['last_name'] + ".   Username is: " + current_user.username
+            message = MIMEMultipart()
+            message['From'] = sender_address
+            message['To'] = receiver_address
+            message['Subject'] = 'Aggie STEM DL Request Data Application'
+            message.attach(MIMEText(mail_content))
+            with open(APP_ROOT + "/static/data/" + str(current_user.id) + "/" + filename, 'rb') as f:
+                attach_file = MIMEApplication(f.read(), Name=filename)
+            attach_file['Content-Disposition'] = 'attachment; filename="%s"' % filename
+            message.attach(attach_file)
+            # Create SMTP session for sending the mail
+            session = smtplib.SMTP_SSL('smtp.gmail.com', email_data[2].split("=")[1].lstrip())  # use gmail with port
+            session.login(sender_address, sender_pass)  # login with mail_id and password
+            text = message.as_string()
+            session.sendmail(sender_address, receiver_address, text)
+            session.quit()
+            print('Mail Sent')
+
+        print("calling redirect....")
+        return redirect(url_for('user_profile'))
+
+
 # Recover Username Page
 @app.route('/recov_username', methods=['GET', 'POST'])
 def recov_username():
@@ -423,60 +522,9 @@ def message_users():
                            access_level=user_manager.get_access_level(db_client(), current_user.id))
 
 
-@app.route('/request_data_form', methods=['GET', 'POST'])
-@login_required
-def request_data_form():
-    if (request.method == 'GET'):
-        # Load new form
-        return render_template('request_data_form.html')
-    elif (request.method == 'POST'):
-        # Get form data
-        print("Get form data..WTF")
-        # Change to just loop through request form...
-        data = {}
-        for id_name in request.form:
-            if ("date" in id_name):
-                print(id_name)
-                data[id_name] = (request.form[id_name]).replace("/", "-")
-            else:
-                data[id_name] = request.form[id_name]
-        data['isactive'] = 0
-        data['user_id'] = str(current_user.id)
-        filename = "request_form" + str(current_user.id) + "_" + str(time.strftime("%d-%m-%Y")) + ".pdf"
-        data['pdf_filename'] = filename
-        user_manager.add_request_form(db_client(), data)
-        create_pdf.create_form(data, APP_ROOT + "/static/data/" + str(current_user.id) + "/" + filename)
-
-        # The mail addresses and password
-        f = open("/home/aggie/.smtp/credentials", "rt")
-        email_data = f.read().split("\n")
-
-        sender_address = email_data[0].split("=")[1].lstrip()
-        sender_pass = email_data[1].split("=")[1].lstrip()
-        receiver_address = 'djbey@protonmail.com'
-        # Setup the MIME
-        mail_content = "The attached document contains the recently created data request by: " + data[
-            'first_name'] + ", "
-        mail_content += data['last_name'] + ".   Username is: " + current_user.username
-        message = MIMEMultipart()
-        message['From'] = sender_address
-        message['To'] = receiver_address
-        message['Subject'] = 'Aggie STEM DL Request Data Application'
-        message.attach(MIMEText(mail_content))
-        with open(APP_ROOT + "/static/data/" + str(current_user.id) + "/" + filename, 'rb') as f:
-            attach_file = MIMEApplication(f.read(), Name=filename)
-        attach_file['Content-Disposition'] = 'attachment; filename="%s"' % filename
-        message.attach(attach_file)
-        # Create SMTP session for sending the mail
-        session = smtplib.SMTP_SSL('smtp.gmail.com', email_data[2].split("=")[1].lstrip())  # use gmail with port
-        session.login(sender_address, sender_pass)  # login with mail_id and password
-        text = message.as_string()
-        session.sendmail(sender_address, receiver_address, text)
-        session.quit()
-        print('Mail Sent')
-
-        print("calling redirect....")
-        return redirect(url_for('user_profile'))
+@app.route('/404')
+def page_not_found():
+    return render_template('404.html')
 
 
 @app.route('/user_profile', methods=['GET', 'POST'])
@@ -679,4 +727,5 @@ if __name__ == "__main__":
     # IP = '128.194.140.214'
     IP = 'localhost'
     app.config['SECRET_KEY'] = "SUPPOSED-to-be-a-secret"
-    app.run(host=os.getenv('IP', IP), port=int(os.getenv('PORT', 8080)), debug=True)
+    # app.run(host=os.getenv('IP', IP), port=int(os.getenv('PORT', 8080)), debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
