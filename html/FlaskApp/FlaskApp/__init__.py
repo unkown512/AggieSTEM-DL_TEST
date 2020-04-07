@@ -1,10 +1,11 @@
 # Class Imports
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 
 # Flask forms and login mods
 from flask_wtf import FlaskForm
+from werkzeug.utils import secure_filename
 from wtforms import StringField, PasswordField, BooleanField, RadioField, SelectField, SubmitField
 from wtforms.validators import InputRequired, Email, Length
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
@@ -230,6 +231,10 @@ def signin():
     return render_template("signin.html", form=form, error=message)
 
 
+def get_current_path():
+    return os.path.dirname(os.path.abspath(__file__))
+
+
 @app.route('/upload_profile_image', methods=['POST'])
 @login_required
 def upload_profile_image():
@@ -276,6 +281,11 @@ def signup():
     return render_template("signup.html", form=RegisterForm(), error=message)
 
 
+@app.route('/manage_data_access', methods=['GET'])
+def manage_data_access():
+    return 'manage data access'
+
+
 @app.route('/request_history/<int:recno>/delete', methods=['POST'])
 def delete_request(recno: int):
     if request.method == 'POST':
@@ -302,7 +312,6 @@ def request_history():
         rows: List[dict] = cursor.fetchall()
         print("request history:", rows)
 
-
         for record in rows:
             for key, value in record.items():
                 record[key] = value if value not in ('', b'') else 'N/A'
@@ -311,6 +320,39 @@ def request_history():
         return render_template('request_history.html', data=rows)
     else:
         return redirect(url_for('page_not_found'))
+
+
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'zip'}
+
+
+def allowed_file(filename: str):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('uploaded_file', filename=filename))
+
+    return render_template('upload_file.html')
+
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
 @app.route('/request_data_form', methods=['GET', 'POST'])
@@ -727,5 +769,8 @@ if __name__ == "__main__":
     # IP = '128.194.140.214'
     IP = 'localhost'
     app.config['SECRET_KEY'] = "SUPPOSED-to-be-a-secret"
+
+    UPLOAD_FOLDER = get_current_path() + '/dataset'
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     # app.run(host=os.getenv('IP', IP), port=int(os.getenv('PORT', 8080)), debug=True)
     app.run(host='0.0.0.0', port=8080, debug=True)
