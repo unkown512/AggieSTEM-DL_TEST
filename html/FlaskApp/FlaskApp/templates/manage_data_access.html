@@ -1,18 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<link rel="stylesheet" href="{{ url_for('static', filename='css/request_history.css') }}">
-
 <head>
     <meta charset="UTF-8">
-    <title>Request History</title>
+    <title>Manage Data Access</title>
 </head>
-<h1>Request History</h1>
 <body>
-
-
-<div><a href='{{ url_for('user_profile') }}'>Back</a></div>
-<div><a href='{{ url_for('request_data_form') }}'>New Request</a></div>
+<h1>manage data access</h1>
 
 {% if data|length == 0 %}
     <h2>No data request record</h2>
@@ -20,7 +13,7 @@
     <table>
         <thead>
         <tr>
-            <th>Delete</th>
+            <th>Decision</th>
             {% for key in data[0].keys() %}
                 <th>{{ key }}</th>
             {% endfor %}
@@ -28,10 +21,13 @@
         </thead>
         <tbody>
         {% for row in data %}
-            <tr class="{{ 'approved' if row.approved=='1' else 'declined' }}">
+            <tr>
                 <td>
-                    <form action='{{ url_for('delete_request', recno=row.recno) }}' method='post'>
-                        <input type='submit' value='Delete'>
+                    <form action='{{ url_for('manage_data_access', recno=row.recno, approved=True) }}' method='post'>
+                        <input type='submit' value='Approve'>
+                    </form>
+                    <form action='{{ url_for('manage_data_access', recno=row.recno, approved=False) }}' method='post'>
+                        <input type='submit' value='Decline'>
                     </form>
                 </td>
                 {% for d in row.values() %}

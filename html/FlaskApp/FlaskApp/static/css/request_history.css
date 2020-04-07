@@ -1,0 +1,7 @@
+.approved {
+    background-color: lightgreen;
+}
+
+.declined {
+    background-color: yellow;
+}

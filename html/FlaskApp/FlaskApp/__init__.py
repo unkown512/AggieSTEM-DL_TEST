@@ -281,15 +281,35 @@ def signup():
     return render_template("signup.html", form=RegisterForm(), error=message)
 
 
-@app.route('/manage_data_access', methods=['GET'])
+@app.route('/manage_data_access', methods=['GET', 'POST'])
 def manage_data_access():
-    return 'manage data access'
+    db = db_client()
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+    if request.method == 'GET':
+        sql = 'select * from request_data order by user_id'
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        return render_template('manage_data_access.html', data=result)
+    elif request.method == 'POST':
+        print("request args:{}".format(request.args))
+        recno = request.args.get('recno')
+        approved = request.args.get('approved')
+        if approved == 'True':
+            sql = 'update request_data set approved=1 where recno=%s'
+            cursor.execute(sql, (recno,))
+            db.commit()
+        elif approved == 'False':
+            sql = 'update request_data set approved=0 where recno=%s'
+            cursor.execute(sql, (recno,))
+            db.commit()
+        else:
+            print('approve value error')
+        return redirect(url_for('manage_data_access'))
 
 
 @app.route('/request_history/<int:recno>/delete', methods=['POST'])
 def delete_request(recno: int):
     if request.method == 'POST':
-        print('IN DELETE REQUEST\n\n')
         db = db_client()
         sql = 'delete from request_data where recno=%s'
         cursor = db.cursor()

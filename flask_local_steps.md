@@ -75,7 +75,7 @@ implement feature related to request form
 1. user fill in request form
     * add auto fill form script (done)
 2. user display submitted request form information (done)
-3. admin view request forms from each user
+3. admin view request forms from each user (done)
 4. admin accept/reject request form, grant/refuse user access to a certain dataset
    * add link to dataset
    * host dataset files on server
@@ -86,3 +86,8 @@ implement feature related to request form
 changed columns with blob type to text type in request_data schema, to make it easier to display on front-end.
 
 host file under the /dataset folder, upload from page: localhost:8080/upload
+
+### manage data access
+* add a link to dataset access management on dashboard if user access level is admin.
+* display all data requests on this page
+* admin may approve or reject a data request.  reflect update on schema request_data.approved column.
