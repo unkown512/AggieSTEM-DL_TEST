@@ -46,6 +46,8 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import session
 from typing import List
 
+from flask_cors import cross_origin
+
 # Start flask app environment settings
 app = Flask(__name__)
 Bootstrap(app)
@@ -375,10 +377,72 @@ def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 @app.route('/show_data', methods=['GET', 'POST'])
+@login_required
 def show_data():
     if request.method == 'GET':
         return render_template('show_data.html')
 
+@app.route('/show_data_fetch', methods=['GET', 'POST'])
+@login_required
+@cross_origin('localhost')
+def show_data_fetch():
+    if request.method == 'GET':
+        return {
+        'username': current_user.username,
+        'type': 'table', 
+        'datasetName': 'TableDemo',
+        'columns': [
+            {
+                'title': 'Name',
+                'dataIndex': 'name',
+                'key': 'name',
+                'renderStrategy': 'linkable'
+            },
+            {
+                'title': 'Age',
+                'dataIndex': 'age',
+                'key': 'age',
+            },
+            {
+                'title': 'Address',
+                'dataIndex': 'address',
+                'key': 'address',
+            },
+            {
+                'title': 'Tags',
+                'key': 'tags',
+                'dataIndex': 'tags',
+                'renderStrategy': 'colorTags'
+            },
+            {
+                'title': 'Action',
+                'key': 'action',
+                'renderStrategy': 'inviteAndDelete'
+            }
+        ],
+        'data': [
+            {
+                'key': '1',
+                'name': 'John Brown',
+                'age': 32,
+                'address': 'New York No. 1 Lake Park',
+                'tags': ['nice', 'developer'],
+            },
+            {
+                'key': '2',
+                'name': 'Jim Green',
+                'age': 42,
+                'address': 'London No. 1 Lake Park',
+                'tags': ['loser'],
+            },
+            {
+                'key': '3',
+                'name': 'Joe Black',
+                'age': 32,
+                'address': 'Sidney No. 1 Lake Park',
+                'tags': ['cool', 'teacher'],
+            },
+        ]};
 
 @app.route('/request_data_form', methods=['GET', 'POST'])
 @login_required

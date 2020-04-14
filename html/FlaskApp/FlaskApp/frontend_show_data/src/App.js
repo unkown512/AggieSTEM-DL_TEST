@@ -1,87 +1,100 @@
 import React from 'react';
-import logo from './logo.svg';
 import { Table, Tag } from 'antd';
 import './App.css';
 
-const columns = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-    render: text => <a>{text}</a>,
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age',
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-    key: 'address',
-  },
-  {
-    title: 'Tags',
-    key: 'tags',
-    dataIndex: 'tags',
-    render: tags => (
-      <span>
-        {tags.map(tag => {
-          let color = tag.length > 5 ? 'geekblue' : 'green';
-          if (tag === 'loser') {
-            color = 'volcano';
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
-      </span>
-    ),
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    render: (text, record) => (
-      <span>
-        <a style={{ marginRight: 16 }}>Invite {record.name}</a>
-        <a>Delete</a>
-      </span>
-    ),
-  },
-];
+const renderStrategySet = {
+  linable: text => <a>{text}</a>,
+  colorTags: tags => (
+    <span>
+      {tags.map(tag => {
+        let color = tag.length > 5 ? 'geekblue' : 'green';
+        if (tag === 'loser') {
+          color = 'volcano';
+        }
+        return (
+          <Tag color={color} key={tag}>
+            {tag.toUpperCase()}
+          </Tag>
+        );
+      })}
+    </span>
+  ),
+  inviteAndDelete: (text, record) => (
+    <span>
+      <a style={{ marginRight: 16 }}>Invite {record.name}</a>
+      <a>Delete</a>
+    </span>
+  )
+};
 
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-];
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      userName: '',
+      datasetName: '',
+      columns: undefined,
+      data: undefined
+    }
+  }
 
-function App() {
-  return (
-    <div className="App">
-      <Table columns={columns} dataSource={data} />
-    </div>
-  );
+  handleTable(jsonData) {
+    if (jsonData.columns && jsonData.data) {
+      let columnsD = jsonData.columns;
+      for (let column of columnsD) {
+        column.render = renderStrategySet[column.renderStrategy];
+      }
+      this.setState({ columns: columnsD, data: jsonData.data });
+    }
+  }
+
+  componentDidMount() {
+    console.log("fetching python localhost");
+    fetch('http://localhost:8080/show_data_fetch', {
+      method: 'GET',
+      mode: 'no-cors',
+      dataType: 'json'
+    }).then(res => res.json()).then(res => {
+      console.log(res)
+      this.setState({ userName: res.username, datasetName: res.datasetName });
+      if (res.type === 'table') {
+        this.handleTable(res);
+      }
+    }).catch(err => console.log(err))
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <nav className="navbar" id="mainNav">
+          <div className="nav-container">
+            <a className="navbar-brand" href="dashboard">Aggie STEM</a>
+            <div className="navbar-collapse">
+              <ul className="navbar-nav">
+                <li className="nav-item" id="login" name="login">
+                  <a className="nav-link" href="user_profile">{this.state.userName}</a>
+                </li>
+                <li className="nav-item" id="logout" name="logout">
+                  <a className="nav-link" href="logout">Logout</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+
+        <div className="mainBody">
+          <h1 className="datasetName">Current Dataset: {this.state.datasetName}</h1>
+          <Table columns={this.state.columns} dataSource={this.state.data} />
+        </div>
+
+        <footer className="py-5 bg-dark">
+          <div className="container">
+            <p className="m-4 text-center text-dark">Copyright &copy; AggieSTEM 2019</p>
+          </div>
+        </footer>
+      </div>
+    );
+  }
 }
 
-export default App;
+export { App };
