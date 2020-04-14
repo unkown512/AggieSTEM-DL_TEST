@@ -374,6 +374,11 @@ def upload_file():
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+@app.route('/show_data', methods=['GET', 'POST'])
+def show_data():
+    if request.method == 'GET':
+        return render_template('show_data.html')
+
 
 @app.route('/request_data_form', methods=['GET', 'POST'])
 @login_required
