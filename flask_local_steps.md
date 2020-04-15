@@ -78,7 +78,8 @@ implement feature related to request form
 3. admin view request forms from each user (done)
 4. admin accept/reject request form, grant/refuse user access to a certain dataset
    * add link to dataset
-   * host dataset files on server
+     * a new column 'download_link' is appended to schema request_data
+   * host dataset files on server (done)
    * select file on server
 5. user see admin action reflected on their page, status update on the request, and link to download the dataset
 

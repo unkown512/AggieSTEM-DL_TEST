@@ -367,13 +367,13 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('uploaded_file', filename=filename))
+            return redirect(url_for('download_file', filename=filename))
 
     return render_template('upload_file.html')
 
 
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
+@app.route('/download/<filename>')
+def download_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 @app.route('/show_data', methods=['GET', 'POST'])
@@ -443,6 +443,28 @@ def show_data_fetch():
                 'tags': ['cool', 'teacher'],
             },
         ]};
+
+@app.route('/hosted_files')
+def hosted_files():
+    host_folder = 'dataset'
+    folder_path = os.path.join(app.root_path, host_folder)
+
+    file_names: List[str] = os.listdir(folder_path)
+
+    file_info: List[dict] = [
+        dict(
+            file_name=file_name,
+            file_size=os.path.getsize(os.path.join(app.root_path, host_folder, file_name)),
+            file_mtime=time.strftime('%Y-%m-%d %H:%M:%S',
+                                     time.localtime(
+                                         os.path.getmtime(os.path.join(app.root_path, host_folder, file_name))))
+        )
+        for file_name in file_names
+    ]
+    g.file_info = file_info
+
+    return render_template('hosted_files.html')
+
 
 @app.route('/request_data_form', methods=['GET', 'POST'])
 @login_required
