@@ -7,7 +7,7 @@
   top: 0;
   right: 0;
   left: 0;
-  z-index: 1030;
+  z-index: 1010;
 }
 
 .nav-container {
@@ -77,4 +77,31 @@
 
 .text-center {
   text-align: center !important;
+}
+
+.testImg {
+  width: 100%;
+}
+
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.cursorpointer {
+  cursor: pointer;
+}
+
+.columnListWrapper {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -ms-flex-align: center;
+  align-items: center;
+  position: relative;
 }
