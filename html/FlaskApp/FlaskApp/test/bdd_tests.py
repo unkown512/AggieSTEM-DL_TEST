@@ -128,3 +128,11 @@ def fill_request_form_test(driver: Chrome, form_info: dict) -> None:
             assert 'user_profile' in driver.current_url
         else:
             print('hidden element interaction not handled by time wait.')
+
+
+def show_data_test(driver: Chrome):
+    target_site = 'localhost:8080/show_data/{}'
+    data_names = ['CIFAR-10', 'MNIST', 'MS-COCO', 'IMDB%20Reviews', 'table']
+    for data_name in data_names:
+        driver.get(target_site.format(data_name))
+        sleep(5)

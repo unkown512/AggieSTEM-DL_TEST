@@ -4,7 +4,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from helper import selenium_init, get_random_credential
-from bdd_tests import access_test, signup_test, signin_test, user_profile_test, fill_request_form_test
+from bdd_tests import access_test, signup_test, signin_test, user_profile_test, fill_request_form_test, show_data_test
 
 driver = selenium_init()
 
@@ -39,5 +39,6 @@ form_info = dict(
     end_date='04/05/2020',
     destroyed_date='04/07/2020'
 )
-fill_request_form_test(driver, form_info)
-# user_profile_test(driver)
+# fill_request_form_test(driver, form_info)
+user_profile_test(driver)
+# show_data_test(driver)
