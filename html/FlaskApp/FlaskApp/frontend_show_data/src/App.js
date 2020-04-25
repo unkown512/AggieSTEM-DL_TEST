@@ -1,6 +1,5 @@
 import React from 'react';
 import './App.css';
-import { urlPathPref } from './utils.js'
 import { browserHistory } from 'react-router';
 import { PdfPlugin } from './PdfPlugin.js';
 import { ImgPlugin } from './ImgPlugin.js'
@@ -54,25 +53,31 @@ class App extends React.Component {
   componentDidMount() {
     let filePost = browserHistory.getCurrentLocation().pathname;
     filePost = filePost.split('/')[filePost.split('/').length - 1];
-    axios.post('http://localhost:8080/show_data/post', { "fileName": filePost })
-      .then((res) => {
-        let json = res.data;
-        this.setState({ userName: json.username, datasetName: json.datasetName });
-        if (json.type === 'table') {
-          this.handleTable(json);
-        } else if (json.type === 'pdf') {
-          this.handlePdf(json);
-        } else if (json.type === 'img') {
-          this.handleImg(json);
-        } else if (json.type === 'csv') {
-          this.handleCsv(json);
-        } else if (json.type === 'txt') {
-          this.handleTxt(json);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    axios.post('post', {
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Access-Control-Allow-Origin': '*',
+        'Accept': 'application/json',
+      },
+      withCredentials: false,
+      "fileName": filePost
+    }).then((res) => {
+      let json = res.data;
+      this.setState({ userName: json.username, datasetName: json.datasetName });
+      if (json.type === 'table') {
+        this.handleTable(json);
+      } else if (json.type === 'pdf') {
+        this.handlePdf(json);
+      } else if (json.type === 'img') {
+        this.handleImg(json);
+      } else if (json.type === 'csv') {
+        this.handleCsv(json);
+      } else if (json.type === 'txt') {
+        this.handleTxt(json);
+      }
+    }).catch((error) => {
+      console.log(error);
+    });
   }
 
   render() {
@@ -93,14 +98,14 @@ class App extends React.Component {
       <div className="App">
         <nav className="navbar" id="mainNav">
           <div className="nav-container">
-            <a className="navbar-brand" href={urlPathPref + "dashboard"}>Aggie STEM</a>
+            <a className="navbar-brand" href={"../dashboard"}>Aggie STEM</a>
             <div className="navbar-collapse">
               <ul className="navbar-nav">
                 <li className="nav-item" id="login" name="login">
-                  <a className="nav-link" href={urlPathPref + "user_profile"}>{this.state.userName}</a>
+                  <a className="nav-link" href={"../user_profile"}>{this.state.userName}</a>
                 </li>
                 <li className="nav-item" id="logout" name="logout">
-                  <a className="nav-link" href={urlPathPref + "logout"}>Logout</a>
+                  <a className="nav-link" href={"../logout"}>Logout</a>
                 </li>
               </ul>
             </div>

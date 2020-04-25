@@ -46,12 +46,14 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import session
 from typing import List
 
-from flask_cors import cross_origin
+from flask_cors import *
 
 # Start flask app environment settings
 app = Flask(__name__)
 Bootstrap(app)
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+CORS(app, resources={r"/*": {"origins": "*"}}, methods=['GET', 'HEAD', 'POST', 'OPTIONS'])
 
 
 # TODO: Change hardcoded PW
@@ -378,7 +380,6 @@ def download_file(filename):
 
 @app.route('/show_data/<filename>', methods=['GET', 'POST'])
 @login_required
-@cross_origin('localhost')
 def show_data(filename):
     if request.method == 'GET':
         return render_template('show_data.html');
