@@ -346,6 +346,15 @@ def request_history():
         return redirect(url_for('page_not_found'))
 
 
+def get_action_record(user_id):
+    db = db_client()
+    cursor = db.cursor()
+    sql = 'SELECT * from action_record where user_id=%s order by time desc'
+    cursor.execute(sql, (user_id,))
+    record = cursor.fetchall()
+    return record
+
+
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'zip'}
 
 
@@ -355,6 +364,7 @@ def allowed_file(filename: str):
 
 
 @app.route('/upload', methods=['GET', 'POST'])
+@login_required
 def upload_file():
     if request.method == 'POST':
         if 'file' not in request.files:
@@ -369,23 +379,42 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('download_file', filename=filename))
 
-    return render_template('upload_file.html')
+            sql = 'insert into action_record(user_id, action, parameter) values (%s, %s, %s)'
+            db = db_client()
+            cursor = db.cursor()
+            cursor.execute(sql, (session['user_id'], 'upload', file.filename,))
+            db.commit()
+            return 'upload complete.'
+    else:
+        return render_template('upload_file.html')
 
 
 @app.route('/download/<filename>')
+@login_required
 def download_file(filename):
+    print('download from user id: {}'.format(session['user_id']))
+    sql = 'insert into action_record(user_id, action, parameter) values (%s, %s, %s)'
+    db = db_client()
+    cursor = db.cursor()
+    cursor.execute(sql, (session['user_id'], 'download', filename,))
+    db.commit()
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 
 @app.route('/show_data/<filename>', methods=['GET', 'POST'])
 @login_required
 def show_data(filename):
     if request.method == 'GET':
+        sql = 'insert into action_record(user_id, action, parameter) values (%s, %s, %s)'
+        db = db_client()
+        cursor = db.cursor()
+        cursor.execute(sql, (session['user_id'], 'preview', filename,))
+        db.commit()
         return render_template('show_data.html');
     elif request.method == 'POST':
         data_name = request.get_json()['fileName'];
-        data_info = { 'username': current_user.username };
+        data_info = {'username': current_user.username};
         # need verification
         # demo ------------------------------------------------------
         if data_name == 'CIFAR-10':
@@ -403,7 +432,7 @@ def show_data(filename):
         elif data_name == 'IMDB%20Reviews':
             data_info['type'] = 'img';
             data_info['datasetName'] = 'JpgDemo';
-            data_info['source'] = ['img/demo1.jpg','img/demo2.jpg','img/demo3.jpg'];
+            data_info['source'] = ['img/demo1.jpg', 'img/demo2.jpg', 'img/demo3.jpg'];
         else:
             data_info['type'] = 'table';
             data_info['datasetName'] = 'TableDemo';
@@ -460,6 +489,7 @@ def show_data(filename):
                 },
             ];
         return data_info;
+
 
 @app.route('/hosted_files')
 def hosted_files():
@@ -717,6 +747,10 @@ def user_profile():
             position = userdata['position']
             position_map = {'3': "Director", '2': "Senior Doc", '1': "Researcher"}
             position = position_map.get(position, 0)
+
+            record = get_action_record(user_id)
+            print('action record of user:{}'.format(user_id))
+            print(record)
 
             return render_template('user_profile.html', user=username, email=email,
                                    phonenumber=phonenumber, position=position,

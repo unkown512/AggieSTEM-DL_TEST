@@ -92,3 +92,13 @@ host file under the /dataset folder, upload from page: localhost:8080/upload
 * add a link to dataset access management on dashboard if user access level is admin.
 * display all data requests on this page
 * admin may approve or reject a data request.  reflect update on schema request_data.approved column.
+
+4/26/2020
+feature: add visit record to database on triggering route download and preview
+
+schema structure:
+record_id, user_id, action, parameter,      time
+0,          5,      download, <filename>,   m/d/y-h:m:s
+1,          6,      upload,   <filename>,   m/d/y-h:m:s
+2,          6,      preview,  <filename>,   m/d/y-h:m:s
+
