@@ -420,74 +420,22 @@ def show_data(filename):
         if data_name == 'CIFAR-10':
             data_info['type'] = 'pdf';
             data_info['datasetName'] = 'PDFDemo';
-            data_info['source'] = 'pdf/demo.pdf';
+            data_info['source'] = 'static/pdf/demo.pdf';
         elif data_name == 'MNIST':
             data_info['type'] = 'txt';
             data_info['datasetName'] = 'TXTDemo';
-            data_info['source'] = 'txt/demo.txt';
+            data_info['source'] = 'static/txt/demo.txt';
         elif data_name == 'MS-COCO':
             data_info['type'] = 'csv';
             data_info['datasetName'] = 'CSVDemo';
-            data_info['source'] = 'csv/demo.csv';
+            data_info['source'] = 'static/csv/demo.csv';
         elif data_name == 'IMDB%20Reviews':
             data_info['type'] = 'img';
             data_info['datasetName'] = 'JpgDemo';
-            data_info['source'] = ['img/demo1.jpg', 'img/demo2.jpg', 'img/demo3.jpg'];
+            data_info['source'] = ['static/img/demo1.jpg', 'static/img/demo2.jpg', 'static/img/demo3.jpg'];
         else:
-            data_info['type'] = 'table';
-            data_info['datasetName'] = 'TableDemo';
-            data_info['columns'] = [
-                {
-                    'title': 'Name',
-                    'dataIndex': 'name',
-                    'key': 'name',
-                    'renderStrategy': 'linkable'
-                },
-                {
-                    'title': 'Age',
-                    'dataIndex': 'age',
-                    'key': 'age',
-                },
-                {
-                    'title': 'Address',
-                    'dataIndex': 'address',
-                    'key': 'address',
-                },
-                {
-                    'title': 'Tags',
-                    'key': 'tags',
-                    'dataIndex': 'tags',
-                    'renderStrategy': 'colorTags'
-                },
-                {
-                    'title': 'Action',
-                    'key': 'action',
-                    'renderStrategy': 'inviteAndDelete'
-                }
-            ];
-            data_info['data'] = [
-                {
-                    'key': '1',
-                    'name': 'John Brown',
-                    'age': 32,
-                    'address': 'New York No. 1 Lake Park',
-                    'tags': ['nice', 'developer'],
-                },
-                {
-                    'key': '2',
-                    'name': 'Jim Green',
-                    'age': 42,
-                    'address': 'London No. 1 Lake Park',
-                    'tags': ['loser'],
-                },
-                {
-                    'key': '3',
-                    'name': 'Joe Black',
-                    'age': 32,
-                    'address': 'Sidney No. 1 Lake Park',
-                    'tags': ['cool', 'teacher'],
-                },
-            ];
+            data_info['type'] = 'error';
+            data_info['msg'] = 'No such dataset exists; or you are not certified. :)';
         return data_info;
 
 

@@ -74,6 +74,8 @@ class App extends React.Component {
         this.handleCsv(json);
       } else if (json.type === 'txt') {
         this.handleTxt(json);
+      } else if (json.type === 'error' && json.msg) {
+        this.setState({ type: 'error', data: json.msg });
       }
     }).catch((error) => {
       console.log(error);
@@ -92,6 +94,8 @@ class App extends React.Component {
       mainPlugin = <TablePlugin type='table' columns={this.state.columns} dataSource={this.state.data} />;
     } else if (this.state.type === 'txt') {
       mainPlugin = <TxtPlugin sourcePath={this.state.sourcePath} />;
+    } else if (this.state.type === 'error') {
+      mainPlugin = <div><p className="text-center">{this.state.data}</p></div>
     }
 
     return (

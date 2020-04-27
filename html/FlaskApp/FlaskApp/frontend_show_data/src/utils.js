@@ -1,1 +1,1 @@
-export const sourcePathPref = '../static/';
+export const sourcePathPref = '../';
