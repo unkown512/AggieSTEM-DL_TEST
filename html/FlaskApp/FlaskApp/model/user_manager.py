@@ -237,7 +237,7 @@ def check_login(db, userid):
         db.rollback()
         return False
     result = cursor.fetchone()
-    if (result[2] == 0):
+    if result is None or result[2] == 0:
         return False
     return result
 
