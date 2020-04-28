@@ -102,3 +102,35 @@ record_id, user_id, action, parameter,      time
 1,          6,      upload,   <filename>,   m/d/y-h:m:s
 2,          6,      preview,  <filename>,   m/d/y-h:m:s
 
+4/27/2020
+feature: associate data preview with file access permission
+* add a file identifier column to the file system after the upload
+* pass file identifier to the /show_data route function, then query database for data_info to feed into React component.
+
+work flow:
+1. user submit data request '/request_data_form'
+2. admin process data request '/manage_data_access'
+    * on approval
+        * upload data file if not existed '/upload'
+        * add data file link to the request
+    * on decline
+        * change style display on user '/request_history' page
+3. user able to preview file from "search data" page
+    TODO: add download link to "search data" page
+4. user able to download file from "search data" page
+    TODO: add download link to preview page
+    TODO: adapt preview link to static folders
+ 
+
+On request history style
+add a state of default, not approved nor declined.
+
+Changed upload time to current_timestamp
+
+Updated workflow:
+1. upload file from portal: '/upload'
+2. on success, preview file with `file_id`, '/show_data/file_id'
+previously stored demo files should be re-uploaded from the page to leave a record in the `dataset` table.   
+
+hosted_files.html now retrieves file record from table `dataset`, 
+    todo: check for its existence in local disk.  

@@ -5,3 +5,7 @@
 .declined {
     background-color: yellow;
 }
+
+.default {
+    background-color: lightgrey;
+}

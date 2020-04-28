@@ -298,12 +298,13 @@ def manage_data_access():
         print("request args:{}".format(request.args))
         recno = request.args.get('recno')
         approved = request.args.get('approved')
+        # approved = 0 as default not processed state
         if approved == 'True':
             sql = 'update request_data set approved=1 where recno=%s'
             cursor.execute(sql, (recno,))
             db.commit()
         elif approved == 'False':
-            sql = 'update request_data set approved=0 where recno=%s'
+            sql = 'update request_data set approved=2 where recno=%s'
             cursor.execute(sql, (recno,))
             db.commit()
         else:
@@ -355,7 +356,15 @@ def get_action_record(user_id):
     return record
 
 
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'zip'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'zip', 'csv'}
+extension_to_folder = {
+    '.csv': 'csv',
+    '.pdf': 'pdf',
+    '.gif': 'img',
+    '.png': 'img',
+    '.jpg': 'img',
+    '.txt': 'txt',
+}
 
 
 def allowed_file(filename: str):
@@ -378,86 +387,110 @@ def upload_file():
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            _, extension = os.path.splitext(filename)
+            print("filename in request:{}".format(extension))
 
-            sql = 'insert into action_record(user_id, action, parameter) values (%s, %s, %s)'
+            # miscellaneous as not specified extension
+            subfolder = extension_to_folder.get(extension, 'misc')
+            relative_path = os.path.join(subfolder, filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], relative_path))
+
             db = db_client()
             cursor = db.cursor()
-            cursor.execute(sql, (session['user_id'], 'upload', file.filename,))
+            sql = 'insert into action_record(user_id, action, parameter) values (%s, %s, %s)'
+            cursor.execute(sql, (session['user_id'], 'upload', filename,))
+            sql = 'insert into dataset (name, description, filepath) values (%s, %s, %s)'
+            cursor.execute(sql, (filename, 'Default', relative_path,))
             db.commit()
-            return 'upload complete.'
+            flash('file: {} upload complete.'.format(filename))
+            return redirect(url_for('upload_file'))
+        else:
+            return 'file type not allowed.'
     else:
         return render_template('upload_file.html')
 
 
-@app.route('/download/<filename>')
+@app.route('/download/<file_id>')
 @login_required
-def download_file(filename):
-    print('download from user id: {}'.format(session['user_id']))
-    sql = 'insert into action_record(user_id, action, parameter) values (%s, %s, %s)'
+def download_file(file_id):
     db = db_client()
-    cursor = db.cursor()
-    cursor.execute(sql, (session['user_id'], 'download', filename,))
-    db.commit()
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+
+    sql = 'select * from dataset where id=%s'
+    cursor.execute(sql, (file_id,))
+    result = cursor.fetchone()
+    if result is not None:
+        relative_path, filename = os.path.split(result['filepath'])
+        relative_path = os.path.join(app.config['UPLOAD_FOLDER'], relative_path)
+        sql = 'insert into action_record(user_id, action, parameter) values (%s, %s, %s)'
+        cursor.execute(sql, (session['user_id'], 'download', result['name'],))
+        db.commit()
+        return send_from_directory(relative_path, filename)
+    else:
+        return 'file id: {} not exist'.format(file_id)
 
 
-@app.route('/show_data/<filename>', methods=['GET', 'POST'])
+@app.route('/show_data/<file_id>', methods=['GET', 'POST'])
 @login_required
-def show_data(filename):
+def show_data(file_id):
+    db = db_client()
+    cursor = db.cursor(pymysql.cursors.DictCursor)
     if request.method == 'GET':
         sql = 'insert into action_record(user_id, action, parameter) values (%s, %s, %s)'
-        db = db_client()
-        cursor = db.cursor()
-        cursor.execute(sql, (session['user_id'], 'preview', filename,))
+        cursor.execute(sql, (session['user_id'], 'preview', file_id,))
         db.commit()
-        return render_template('show_data.html');
+        return render_template('show_data.html')
     elif request.method == 'POST':
-        data_name = request.get_json()['fileName'];
-        data_info = {'username': current_user.username};
-        # need verification
-        # demo ------------------------------------------------------
-        if data_name == 'CIFAR-10':
-            data_info['type'] = 'pdf';
-            data_info['datasetName'] = 'PDFDemo';
-            data_info['source'] = 'static/pdf/demo.pdf';
-        elif data_name == 'MNIST':
-            data_info['type'] = 'txt';
-            data_info['datasetName'] = 'TXTDemo';
-            data_info['source'] = 'static/txt/demo.txt';
-        elif data_name == 'MS-COCO':
-            data_info['type'] = 'csv';
-            data_info['datasetName'] = 'CSVDemo';
-            data_info['source'] = 'static/csv/demo.csv';
-        elif data_name == 'IMDB%20Reviews':
-            data_info['type'] = 'img';
-            data_info['datasetName'] = 'JpgDemo';
-            data_info['source'] = ['static/img/demo1.jpg', 'static/img/demo2.jpg', 'static/img/demo3.jpg'];
+        # todo: a workaround to retrieve file_id from url, since file_id='post' with unknown reason
+        id = request.get_json()['fileName']
+        sql = 'select * from dataset where id=%s'
+        cursor.execute(sql, (id,))
+        result = cursor.fetchone()
+        print("result:{}, file_id:{}".format(result, id))
+        data_info = {'username': current_user.username}
+        if result is not None:
+            relative_path, filename = os.path.split(result['filepath'])
+            _, extension = os.path.splitext(filename)
+            subfolder = extension_to_folder.get(extension, 'misc')
+            source_path = os.path.join('static', subfolder, filename)
+            data_info['type'] = subfolder
+            data_info['datasetName'] = result['name']
+            data_info['source'] = source_path
+            if data_info['type'] == 'img':  # feed list to img type
+                data_info['source'] = [source_path]
+            print('data_info:{}'.format(data_info))
+            return data_info
         else:
-            data_info['type'] = 'error';
-            data_info['msg'] = 'No such dataset exists; or you are not certified. :)';
-        return data_info;
+            data_info['type'] = 'error'
+            data_info['msg'] = 'No such dataset exists; or you are not certified. :)'
+            return data_info
 
 
 @app.route('/hosted_files')
 def hosted_files():
     host_folder = 'dataset'
     folder_path = os.path.join(app.root_path, host_folder)
-
     file_names: List[str] = os.listdir(folder_path)
+
+    db = db_client()
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+    sql = 'select * from dataset'
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    print(result)
 
     file_info: List[dict] = [
         dict(
-            file_name=file_name,
-            file_size=os.path.getsize(os.path.join(app.root_path, host_folder, file_name)),
-            file_mtime=time.strftime('%Y-%m-%d %H:%M:%S',
-                                     time.localtime(
-                                         os.path.getmtime(os.path.join(app.root_path, host_folder, file_name))))
+            file_id=row['id'],
+            dataset_name=row['name'],
+            file_name=os.path.split(row['filepath'])[1],
+            file_size=os.path.getsize(os.path.join(app.config['UPLOAD_FOLDER'], row['filepath'])),
+            file_upload_time=row['upload_time'],
         )
-        for file_name in file_names
+        for row in result
     ]
     g.file_info = file_info
-
+    # return 'under construction'
     return render_template('hosted_files.html')
 
 
@@ -880,7 +913,7 @@ if __name__ == "__main__":
     IP = 'localhost'
     app.config['SECRET_KEY'] = "SUPPOSED-to-be-a-secret"
 
-    UPLOAD_FOLDER = get_current_path() + '/dataset'
+    UPLOAD_FOLDER = get_current_path() + '/static'
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     # app.run(host=os.getenv('IP', IP), port=int(os.getenv('PORT', 8080)), debug=True)
     app.run(host='0.0.0.0', port=8080, debug=True)
