@@ -13,7 +13,6 @@
     <table>
         <thead>
         <tr>
-            <th>Decision</th>
             {% for key in data[0].keys() %}
                 <th>{{ key }}</th>
             {% endfor %}
@@ -22,18 +21,26 @@
         <tbody>
         {% for row in data %}
             <tr>
-                <td>
-                    <form action='{{ url_for('manage_data_access', recno=row.recno, approved=True) }}' method='post'>
-                        <input type='submit' value='Approve'>
-                    </form>
-                    <form action='{{ url_for('manage_data_access', recno=row.recno, approved=False) }}' method='post'>
-                        <input type='submit' value='Decline'>
-                    </form>
-                </td>
                 {% for d in row.values() %}
                     <td>{{ d }}</td>
                 {% endfor %}
+            </tr>
+            <tr>
+                <td>
+                    <form action='{{ url_for('manage_data_access', recno=row.recno, approved=True, request_user=row.user_id) }}' method='post'>
+                        <input type='submit' id="approve" name="approve" value='Approve'>
+                        <select id="file_id" name="file_id">
+                            {% for info in file_info %}
+                                <option value="{{ info.id }}">{{ info.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
 
+                    <form action='{{ url_for('manage_data_access', recno=row.recno, approved=False) }}' method='post'>
+                        <input type='submit' id="decline" name="decline" value='Decline'>
+                        <input type="text" id="reason" name="reason" placeholder="reason">
+                    </form>
+                </td>
             </tr>
         {% endfor %}
         </tbody>

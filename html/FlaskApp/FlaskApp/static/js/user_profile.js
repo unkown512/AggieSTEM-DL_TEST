@@ -94,7 +94,7 @@ function callback_search(json) {
       let tdNode = trNode.insertCell();
       if (idx2 === 1) {
         let aTag = document.createElement('a');
-        aTag.setAttribute('href', 'show_data/' + row_data[idx2]);
+        aTag.setAttribute('href', 'show_data/' + row_data[idx2-1]);
         aTag.setAttribute('target', '_blank');
         aTag.innerHTML = row_data[idx2];
         tdNode.appendChild(aTag);

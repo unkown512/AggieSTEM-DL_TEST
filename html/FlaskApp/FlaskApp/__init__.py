@@ -289,21 +289,30 @@ def signup():
 def manage_data_access():
     db = db_client()
     cursor = db.cursor(pymysql.cursors.DictCursor)
+    sql = "select * from dataset"
+    cursor.execute(sql)
+    file_info = cursor.fetchall()
     if request.method == 'GET':
         sql = 'select * from request_data order by user_id'
         cursor.execute(sql)
         result = cursor.fetchall()
-        return render_template('manage_data_access.html', data=result)
+        return render_template('manage_data_access.html', data=result, file_info=file_info)
     elif request.method == 'POST':
-        print("request args:{}".format(request.args))
         recno = request.args.get('recno')
         approved = request.args.get('approved')
+        request_user = request.args.get('request_user')
         # approved = 0 as default not processed state
+        print(request.args)
         if approved == 'True':
+            file_id = request.form['file_id']
+            print("granted file id:", file_id)
+            sql = "insert into dataset_access (user_id, dataset_id, status) values (%s, %s, %s)"
+            cursor.execute(sql, (request_user, file_id, 'granted',))
             sql = 'update request_data set approved=1 where recno=%s'
             cursor.execute(sql, (recno,))
             db.commit()
         elif approved == 'False':
+            reason = request.form['reason']
             sql = 'update request_data set approved=2 where recno=%s'
             cursor.execute(sql, (recno,))
             db.commit()
@@ -868,13 +877,17 @@ def serach_keywords():
         db = db_client()
         cursor = db.cursor()
         user_id = session['user_id']
-        sql = 'select * from dataset where id in (select dataset_id from dataset_access where user_id=%s and status=%s)'
+        headers = ['dataset.id', 'name', 'description', 'upload_time']
+        sql = 'select {} from dataset left join dataset_access on dataset.id = dataset_access.dataset_id ' \
+              'where user_id=%s and status=%s'.format(', '.join(headers))
+        print(cursor.mogrify(sql, (user_id, 'granted',)))
         cursor.execute(sql, (user_id, 'granted',))
         all_granted_dataset = cursor.fetchall()
         print("all granted dataset:{}".format(all_granted_dataset))
 
-        sql = 'select * from dataset where name like %s and id in (select dataset_id from dataset_access where user_id=%s and status=%s)'
-        # print(cursor.mogrify(sql, ('%{}%'.format(keywords),user_id,'granted',)))
+        sql = 'select {} from dataset left join dataset_access da on dataset.id = da.dataset_id ' \
+              'where name like %s and user_id=%s and status=%s'.format(', '.join(headers))
+        # print(cursor.mogrify(sql, ('%{}%'.format(keywords), user_id, 'granted',)))
         cursor.execute(sql, ('%{}%'.format(keywords), user_id, 'granted',))
         name_like_dataset = cursor.fetchall()
         print(name_like_dataset)
