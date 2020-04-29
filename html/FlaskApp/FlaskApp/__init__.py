@@ -1,4 +1,5 @@
 # Class Imports
+from flask import jsonify
 from flask import Flask, send_from_directory
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
@@ -32,7 +33,8 @@ import json
 import ast
 import random
 import os
-import smtplib, ssl
+import smtplib
+import ssl
 import boto3
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -53,7 +55,8 @@ app = Flask(__name__)
 Bootstrap(app)
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-CORS(app, resources={r"/*": {"origins": "*"}}, methods=['GET', 'HEAD', 'POST', 'OPTIONS'])
+CORS(app, resources={r"/*": {"origins": "*"}},
+     methods=['GET', 'HEAD', 'POST', 'OPTIONS'])
 
 
 # TODO: Change hardcoded PW
@@ -130,21 +133,27 @@ class User(UserMixin):
 
 
 class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=250)])
+    email = StringField('Email', validators=[InputRequired(), Email(
+        message='Invalid Email'), Length(max=250)])
     # TODO: Password length should be much longer than 80
-    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
+    password = PasswordField('Password', validators=[
+                             InputRequired(), Length(min=8, max=80)])
     remember = BooleanField('Remember me')
 
 
 class RegisterForm(FlaskForm):
     # phone number
-    username = StringField('Username <p class="text-info">First Initial + Last Name<p>'
-                           , validators=[InputRequired(), Length(min=4, max=15)])
-    position = SelectField('Position', validators=[InputRequired()], choices=[('', ''), ('R', 'Researcher')])
+    username = StringField('Username <p class="text-info">First Initial + Last Name<p>',
+                           validators=[InputRequired(), Length(min=4, max=15)])
+    position = SelectField('Position', validators=[InputRequired()], choices=[
+                           ('', ''), ('R', 'Researcher')])
     phone = StringField('Phone', validators=[InputRequired()])
-    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
-    conf_password = PasswordField('Confirm Password', validators=[InputRequired(), Length(min=8, max=80)])
-    email = StringField('Email', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=250)])
+    password = PasswordField('Password', validators=[
+                             InputRequired(), Length(min=8, max=80)])
+    conf_password = PasswordField('Confirm Password', validators=[
+                                  InputRequired(), Length(min=8, max=80)])
+    email = StringField('Email', validators=[InputRequired(), Email(
+        message='Invalid Email'), Length(max=250)])
     conf_email = StringField('Confirm Email',
                              validators=[InputRequired(), Email(message='Invalid Email'), Length(max=250)])
     privacy_agreement = SelectField(
@@ -156,16 +165,20 @@ class RegisterForm(FlaskForm):
 
 
 class ForgotUser(FlaskForm):
-    email = StringField('Email', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=250)])
+    email = StringField('Email', validators=[InputRequired(), Email(
+        message='Invalid Email'), Length(max=250)])
 
 
 class NewPw(FlaskForm):
-    new_password = PasswordField('New Password', validators=[InputRequired(), Length(min=8, max=80)])
-    confirm_password = PasswordField('Confirm Password', validators=[InputRequired(), Length(min=8, max=80)])
+    new_password = PasswordField('New Password', validators=[
+                                 InputRequired(), Length(min=8, max=80)])
+    confirm_password = PasswordField('Confirm Password', validators=[
+                                     InputRequired(), Length(min=8, max=80)])
 
 
 class ForgotPw(FlaskForm):
-    email = StringField('Email', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=250)])
+    email = StringField('Email', validators=[InputRequired(), Email(
+        message='Invalid Email'), Length(max=250)])
     # code = StringField('</br> Code', validators=[InputRequired(), Length(min=4, max=80)])
 
 
@@ -209,7 +222,8 @@ def signin():
                 # Change user_profile to recno
                 user_profile = user_manager.get_username(db, email)
                 user_id = user_manager.get_user_id(db, user_profile)
-                user_access_level = user_manager.get_access_level(db, str(user_id))
+                user_access_level = user_manager.get_access_level(
+                    db, str(user_id))
                 new_user = User(user_profile, user_id, user_access_level)
                 user_manager.user_login_status(db_client(), str(user_id), "1")
                 login_user(new_user, remember=form.remember.data)
@@ -218,7 +232,8 @@ def signin():
                 try:
                     os.makedirs(APP_ROOT + "/static/data/" + str(user_id))
                 except:
-                    print("Directory already exists for user = %s" % str(user_id))
+                    print("Directory already exists for user = %s" %
+                          str(user_id))
                 return redirect(url_for('dashboard'))
             else:
                 message = "Incorrect username or password"
@@ -278,7 +293,8 @@ def signup():
                              form.phone.data, smap[form.privacy_agreement.data], smap[form.contact_agreement.data]]
                 user_manager.add_user(db, user_data)
 
-                message = "User: " + str(form.username.data) + " successfully created."
+                message = "User: " + \
+                    str(form.username.data) + " successfully created."
                 return redirect(url_for("signin"))
         else:
             message = "Invalid Data. TODO: MAKE SPECIFIC"
@@ -296,7 +312,7 @@ def manage_data_access():
         sql = 'select * from request_data order by user_id'
         cursor.execute(sql)
         result = cursor.fetchall()
-        return render_template('manage_data_access.html', data=result, file_info=file_info)
+        return render_template('manage_data_access.html', user=current_user.username, access_level=int(current_user.access), data=result, file_info=file_info)
     elif request.method == 'POST':
         recno = request.args.get('recno')
         approved = request.args.get('approved')
@@ -351,7 +367,8 @@ def request_history():
                 record[key] = value if value not in ('', b'') else 'N/A'
         else:
             pass
-        return render_template('request_history.html', data=rows)
+
+        return render_template('request_history.html', data=rows, user=current_user.username, access_level=int(current_user.access),)
     else:
         return redirect(url_for('page_not_found'))
 
@@ -416,7 +433,7 @@ def upload_file():
         else:
             return 'file type not allowed.'
     else:
-        return render_template('upload_file.html')
+        return render_template('upload_file.html', user=current_user.username, access_level=int(current_user.access),)
 
 
 @app.route('/download/<file_id>')
@@ -430,7 +447,8 @@ def download_file(file_id):
     result = cursor.fetchone()
     if result is not None:
         relative_path, filename = os.path.split(result['filepath'])
-        relative_path = os.path.join(app.config['UPLOAD_FOLDER'], relative_path)
+        relative_path = os.path.join(
+            app.config['UPLOAD_FOLDER'], relative_path)
         sql = 'insert into action_record(user_id, action, parameter) values (%s, %s, %s)'
         cursor.execute(sql, (session['user_id'], 'download', result['name'],))
         db.commit()
@@ -493,7 +511,8 @@ def hosted_files():
             file_id=row['id'],
             dataset_name=row['name'],
             file_name=os.path.split(row['filepath'])[1],
-            file_size=os.path.getsize(os.path.join(app.config['UPLOAD_FOLDER'], row['filepath'])),
+            file_size=os.path.getsize(os.path.join(
+                app.config['UPLOAD_FOLDER'], row['filepath'])),
             file_upload_time=row['upload_time'],
         )
         for row in result
@@ -522,13 +541,16 @@ def request_data_form():
                 data[id_name] = request.form[id_name]
         data['isactive'] = 0
         data['user_id'] = str(current_user.id)
-        filename = "request_form" + str(current_user.id) + "_" + str(time.strftime("%d-%m-%Y")) + ".pdf"
+        filename = "request_form" + \
+            str(current_user.id) + "_" + \
+            str(time.strftime("%d-%m-%Y")) + ".pdf"
         data['pdf_filename'] = filename
         user_manager.add_request_form(db_client(), data)
 
         # disable email function temporarily
         if False:
-            create_pdf.create_form(data, APP_ROOT + "/static/data/" + str(current_user.id) + "/" + filename)
+            create_pdf.create_form(
+                data, APP_ROOT + "/static/data/" + str(current_user.id) + "/" + filename)
             # The mail addresses and password
             f = open("/home/aggie/.smtp/credentials", "rt")
             email_data = f.read().split("\n")
@@ -538,7 +560,8 @@ def request_data_form():
             # Setup the MIME
             mail_content = "The attached document contains the recently created data request by: " + data[
                 'first_name'] + ", "
-            mail_content += data['last_name'] + ".   Username is: " + current_user.username
+            mail_content += data['last_name'] + \
+                ".   Username is: " + current_user.username
             message = MIMEMultipart()
             message['From'] = sender_address
             message['To'] = receiver_address
@@ -549,8 +572,10 @@ def request_data_form():
             attach_file['Content-Disposition'] = 'attachment; filename="%s"' % filename
             message.attach(attach_file)
             # Create SMTP session for sending the mail
-            session = smtplib.SMTP_SSL('smtp.gmail.com', email_data[2].split("=")[1].lstrip())  # use gmail with port
-            session.login(sender_address, sender_pass)  # login with mail_id and password
+            session = smtplib.SMTP_SSL('smtp.gmail.com', email_data[2].split("=")[
+                                       1].lstrip())  # use gmail with port
+            # login with mail_id and password
+            session.login(sender_address, sender_pass)
             text = message.as_string()
             session.sendmail(sender_address, receiver_address, text)
             session.quit()
@@ -615,7 +640,8 @@ def reset_pw(token):
         if (new_password != confirm_password):
             pass
         print("UPDATING PASSWORD")
-        user_manager.update_user_password(db_client(), new_password, str(user.id))
+        user_manager.update_user_password(
+            db_client(), new_password, str(user.id))
         return redirect(url_for('signin'))
     return render_template("change_pw.html", form=form, message="", token=token)
 
@@ -634,7 +660,8 @@ def manage_users():
             user_data['username'] = user[3]
             user_data['uid'] = str(user[4])
             user_data['position'] = user[2]
-            user_data['access_level'] = user_manager.get_access_level(db, str(user[4]))
+            user_data['access_level'] = user_manager.get_access_level(
+                db, str(user[4]))
             user_data['email'] = user[1]
             user_data['phone'] = user[0]
             user_data['groups'] = 'TODO'
@@ -667,7 +694,8 @@ def manage_users():
             response_data['data'].append(post_args['data'][user_id])
 
             new_user_data = {}
-            new_user_data['access_level'] = int(response_data['data'][0]['access_level'])
+            new_user_data['access_level'] = int(
+                response_data['data'][0]['access_level'])
             new_user_data['position'] = response_data['data'][0]['position']
 
             user_manager.update_user(db, user_id, new_user_data)
@@ -696,7 +724,8 @@ def message_users():
             user_data['uid'] = str(row[4])
             user_data['username'] = row[3]
             user_data['phone'] = row[0]
-            user_data['groups'] = groups[i]  # Make sure it works with multigroups/user
+            # Make sure it works with multigroups/user
+            user_data['groups'] = groups[i]
             temp.append(user_data)
             i += 1
             if (i > 3):
@@ -735,7 +764,8 @@ def user_profile():
             phonenumber = userdata['phone']
             email = userdata['email']
             position = userdata['position']
-            position_map = {'3': "Director", '2': "Senior Doc", '1': "Researcher"}
+            position_map = {'3': "Director",
+                            '2': "Senior Doc", '1': "Researcher"}
             position = position_map.get(position, 0)
 
             record = get_action_record(user_id)
@@ -744,8 +774,10 @@ def user_profile():
 
             return render_template('user_profile.html', user=username, email=email,
                                    phonenumber=phonenumber, position=position,
-                                   profile_img="static/data/" + str(user_id) + "/profile",
-                                   user_links=user_manager.get_profile_ahref_links(db, str(user_id)),
+                                   profile_img="static/data/" +
+                                   str(user_id) + "/profile",
+                                   user_links=user_manager.get_profile_ahref_links(
+                                       db, str(user_id)),
                                    access_level=user_manager.get_access_level(db_client(), current_user.id))
     elif (request.method == 'POST'):
         data = {}
@@ -791,9 +823,11 @@ def send_sms():
         topic_arn = topic['TopicArn']
 
         for num in numbers:
-            client.subscribe(TopicArn=topic_arn, Protocol='sms', Endpoint="+1" + num)
+            client.subscribe(TopicArn=topic_arn,
+                             Protocol='sms', Endpoint="+1" + num)
 
-        client.publish(Message="Aggie STEM DL: \n\n" + message, TopicArn=topic_arn)
+        client.publish(Message="Aggie STEM DL: \n\n" +
+                       message, TopicArn=topic_arn)
 
         for sub in client.list_subscriptions()['Subscriptions']:
             client.unsubscribe(SubscriptionArn=sub['SubscriptionArn'])
@@ -814,7 +848,8 @@ def send_email_reset(email, message, token):
     sender_pass = email_data[1].split("=")[1].lstrip()
     receiver_address = 'djbey@protonmail.com'
     # Setup the MIME
-    mail_content = "Password reset link expires in 15 minutes: " + "https://138.68.45.210/recov_pw/%s"
+    mail_content = "Password reset link expires in 15 minutes: " + \
+        "https://138.68.45.210/recov_pw/%s"
     mail_content = mail_content % token
     message = MIMEMultipart()
     message['From'] = sender_address
@@ -822,8 +857,10 @@ def send_email_reset(email, message, token):
     message['Subject'] = 'Aggie STEM DL Password Reset. NO REPLY'
     message.attach(MIMEText(mail_content))
     # Create SMTP session for sending the mail
-    session = smtplib.SMTP_SSL('smtp.gmail.com', email_data[2].split("=")[1].lstrip())  # use gmail with port
-    session.login(sender_address, sender_pass)  # login with mail_id and password
+    session = smtplib.SMTP_SSL('smtp.gmail.com', email_data[2].split("=")[
+                               1].lstrip())  # use gmail with port
+    # login with mail_id and password
+    session.login(sender_address, sender_pass)
     text = message.as_string()
     session.sendmail(sender_address, receiver_address, text)
     session.quit()
@@ -860,8 +897,6 @@ def send_email():
         return ("EMAIL SENT")
 
 
-from flask import jsonify
-
 
 # search keywords
 @app.route('/search_keywords', methods=['post'])
@@ -873,7 +908,8 @@ def serach_keywords():
     elif (request.method == 'POST'):
         keywords: str = request.form['keywords']
         keywords = keywords.replace('"', '')
-        print("user:{}, search keywords:{}".format(session['user_id'], keywords))
+        print("user:{}, search keywords:{}".format(
+            session['user_id'], keywords))
         db = db_client()
         cursor = db.cursor()
         user_id = session['user_id']
@@ -886,7 +922,8 @@ def serach_keywords():
         print("all granted dataset:{}".format(all_granted_dataset))
 
         sql = 'select {} from dataset left join dataset_access da on dataset.id = da.dataset_id ' \
-              'where name like %s and user_id=%s and status=%s'.format(', '.join(headers))
+              'where name like %s and user_id=%s and status=%s'.format(
+                  ', '.join(headers))
         # print(cursor.mogrify(sql, ('%{}%'.format(keywords), user_id, 'granted',)))
         cursor.execute(sql, ('%{}%'.format(keywords), user_id, 'granted',))
         name_like_dataset = cursor.fetchall()
@@ -909,7 +946,8 @@ def table_reload():
         user_data['username'] = user[3]
         user_data['uid'] = str(user[4])
         user_data['position'] = user[2]
-        user_data['access_level'] = user_manager.get_access_level(db, str(user[4]))
+        user_data['access_level'] = user_manager.get_access_level(
+            db, str(user[4]))
         user_data['email'] = user[1]
         user_data['phone'] = user[0]
         user_data['groups'] = 'TODO'

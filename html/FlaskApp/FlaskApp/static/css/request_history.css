@@ -1,11 +1,147 @@
-.approved {
+body {
+    background: -webkit-linear-gradient(left, #d4af37, #500000);
+}
+
+.request-history-title {
+    margin-top: 80px;
+    margin-left: 10%;
+}
+
+.request-history-new {
+    margin-left: 10%;
+}
+
+.request-history-section {
+    width: 100%;
+    padding: 0 10%;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    align-items: flex-start;
+    -ms-flex-align: start;
+}
+
+.request-history-card {
+    width: 47%;
+    padding: 5px 10px 20px 10px;
+    margin: 10px;
+    position: relative;
+    border-top: 1px solid #d1d5da;
+    border-left: 1px solid #d1d5da;
+    border-right: 1px solid #d1d5da;
+    border-radius: 3px;
+    background-color: white;
+    overflow: hidden;
+}
+
+.manage-data-access-panel-wrapper {
+    height: 24px;
+    line-height: 24px;
+    margin-bottom: 5px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+    flex-direction: row;
+}
+
+.flexible-item {
+    flex-grow: 1;
+}
+
+.manage-data-access-panel-item-input {
+    line-height: initial;
+    flex-shrink: 0;
+}
+
+.request-history-card-approval-label {
+    height: 24px;
+    padding-left: 5px;
+    margin-bottom: 5px;
+    position: relative;
+    border-radius: 5px;
+    line-height: 24px;
+}
+
+.request-history-card-approval-label-processing {
+    background-color: lightgrey;
+}
+
+.request-history-card-approval-label-approved {
     background-color: lightgreen;
 }
 
-.declined {
-    background-color: yellow;
+.request-history-card-approval-label-declined {
+    background-color: lightcoral;
 }
 
-.default {
-    background-color: lightgrey;
+.request-history-card-aproval-form {
+    position: absolute;
+    top: 0;
+    right: 0;
+    line-height: initial;
 }
+
+.request-history-card-hidden-section {
+    width: 100%;
+}
+
+.request-history-card-hidden-section-none {
+    display: none;
+}
+
+.request-history-card-item-row {
+    margin-bottom: 2.5px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.request-history-card-item-row-category {
+    margin-bottom: 2.5px;
+    padding-left: 5px;
+    font-size: 18px;
+    font-weight: bolder;
+    color: grey;
+}
+
+.request-history-card-item-row-key {
+    width: 40%;
+    padding-left: 5px;
+    margin-right: 2.5px;
+    flex-shrink: 0;
+    background-color: lightyellow;
+}
+
+.request-history-card-item-row-value {
+    flex-grow: 1;
+    padding-left: 5px;
+    background-color: lightyellow;
+}
+
+.request-history-card-view-detail {
+    width: 100%;
+    margin-left: -10px;
+    background-color: lightgrey;
+    position: absolute;
+    bottom: 0;
+    font-size: 10px;
+    text-align: center;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.request-history-card-view-detail:hover {
+    background-color: grey;
+}
+

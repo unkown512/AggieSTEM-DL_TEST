@@ -1,0 +1,28 @@
+body{
+    background: -webkit-linear-gradient(left, #d4af37, #500000);
+    height: auto;
+  }
+
+.upload-section {
+    margin-top: 80px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -ms-flex-align: center;
+    align-items: center;
+    position: relative;
+}
+
+.upload-form {
+    padding: 10px 30px;
+    border-radius: 10px;
+    border: medium dashed black;
+}
+
+.upload-footer {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    background-color: white;
+}
