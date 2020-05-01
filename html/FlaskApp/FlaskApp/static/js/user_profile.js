@@ -82,6 +82,7 @@ $(document).ready(function () {
 
 function callback_search(json) {
   tableNode = document.createElement("table");
+  tableNode.style.width = "100%";
   tableNode.setAttribute("id", "search-result-table");
   tableNode.setAttribute("border", "1");
   if (json[1].length == 0) { alert("No records contain such keyword!"); }
@@ -94,7 +95,7 @@ function callback_search(json) {
       let tdNode = trNode.insertCell();
       if (idx2 === 1) {
         let aTag = document.createElement('a');
-        aTag.setAttribute('href', 'show_data/' + row_data[idx2]);
+        aTag.setAttribute('href', 'show_data/' + row_data[0]);
         aTag.setAttribute('target', '_blank');
         aTag.innerHTML = row_data[idx2];
         tdNode.appendChild(aTag);

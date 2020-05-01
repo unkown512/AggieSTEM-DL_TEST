@@ -1,23 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Upload New File</title>
+
+    <!-- Bootstrap core CSS -->
+    <!-- <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.css') }}">
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="/css/creative.min.css" rel="stylesheet"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/creative.min.css') }}">-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/creative.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/upload_file.css') }}">
 </head>
+
 <body>
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand js-scroll-trigger" href="{{ url_for('dashboard') }}">Aggie STEM</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    {% if access_level >= 3 %}
+                    <li class="nav-item" id="manageuser" name="manageuser">
+                        <a class="nav-link js-scroll-trigger" href="{{ url_for('manage_users') }}">Manage Users</a>
+                    </li>
+                    <!--<li class="nav-item" id="managegroups" name="managegroups">
+                <a class="nav-link js-scroll-trigger" href="{{ url_for('manage_groups') }}">Manage Groups</a>
+        </li>-->
+                    {% endif %}
+                    {% if access_level == 3 %}
+                    <li class="nav-item" id="messageusers" name="messageusers">
+                        <a class="nav-link js-scroll-trigger" href="{{ url_for('message_users') }}">Message Users</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item" id="login" name="login">
+                        <a class="nav-link js-scroll-trigger" href="{{ url_for('user_profile') }}">{{user}}</a>
+                    </li>
+                    <li class="nav-item" id="logout" name="logout">
+                        <a class="nav-link js-scroll-trigger" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="upload-section">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
         <ul class=flashes>
             {% for message in messages %}
-                <li>{{ message }}</li>
+            <li>{{ message }}</li>
             {% endfor %}
         </ul>
-    {% endif %}
-{% endwith %}
-<h1>Upload new File</h1>
-<form method=post enctype=multipart/form-data>
-    <input type=file name=file>
-    <input type=submit value=Upload>
-</form>
+        {% endif %}
+        {% endwith %}
+        <h1 class="upload-title">Upload new File</h1>
+        <form class="upload-form" method=post enctype=multipart/form-data>
+            <input class="upload-form-botton" type=file name=file>
+            <input class="upload-form-submit" type=submit value=Upload>
+        </form>
+    </div>
+    <footer class="upload-footer">
+        <p class="m-4 text-center text-dark">Copyright &copy; AggieSTEM 2019</p>
+    </footer>
+
 </body>
+
+<!-- <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
+<script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+<!-- Custom scripts for this template -->
+<!-- <script src="/js/creative.min.js"></script> -->
+<script src="{{ url_for('static', filename='js/creative.min.js') }}"></script>
+
 </html>

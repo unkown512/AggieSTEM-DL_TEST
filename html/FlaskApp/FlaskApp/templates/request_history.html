@@ -1,48 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/request_history.css') }}">
-
 <head>
     <meta charset="UTF-8">
     <title>Request History</title>
+
+    <!-- Bootstrap core CSS -->
+    <!-- <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.css') }}">
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="/css/creative.min.css" rel="stylesheet"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/creative.min.css') }}">-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/creative.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/request_history.css') }}">
+
 </head>
-<h1>Request History</h1>
+
 <body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand js-scroll-trigger" href="{{ url_for('dashboard') }}">Aggie STEM</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    {% if access_level >= 3 %}
+                    <li class="nav-item" id="manageuser" name="manageuser">
+                        <a class="nav-link js-scroll-trigger" href="{{ url_for('manage_users') }}">Manage Users</a>
+                    </li>
+                    <!--<li class="nav-item" id="managegroups" name="managegroups">
+                <a class="nav-link js-scroll-trigger" href="{{ url_for('manage_groups') }}">Manage Groups</a>
+        </li>-->
+                    {% endif %}
+                    {% if access_level == 3 %}
+                    <li class="nav-item" id="messageusers" name="messageusers">
+                        <a class="nav-link js-scroll-trigger" href="{{ url_for('message_users') }}">Message Users</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item" id="login" name="login">
+                        <a class="nav-link js-scroll-trigger" href="{{ url_for('user_profile') }}">{{user}}</a>
+                    </li>
+                    <li class="nav-item" id="logout" name="logout">
+                        <a class="nav-link js-scroll-trigger" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <h1 class="request-history-title">Request History</h1>
+
+    <div class="request-history-new"><a href='{{ url_for('request_data_form') }}'>New Request</a></div>
+
+    <section class="request-history-section" id="request-history-section"></section>
+    <script>
+        const requestFormData = {
+            "Requestor Info": {
+                "first_name": "First Name",
+                "last_name": "Last Name",
+                "org_name": "Organization / Institution",
+                "status": "Status", "phone": "Phone Number",
+                "email_address": "Email Address",
+                "address": "Address"
+            },
+            "Data Usage": {
+                "research_topics": "Research Topic",
+                "authors": "Co-researchers / authors",
+                "data_how": "How the data will be used"
+            },
+            "Data Access Details": {
+                "data_details1_name": "Access Name",
+                "data_details1_email": "Access Email",
+                "data_details1_inst": "Access Institution",
+                "data_details1_phone": "Access Phone",
+                "data_details2_name": "Responsible Name",
+                "data_details2_email": "Responsible Email",
+                "data_details2_inst": "Responsible Institution",
+                "data_details2_phone": "Responsible Phone",
+                "data_storage": "Data Storage",
+                "start_date": "Start Date",
+                "end_date": "End Date",
+                "needed_date": "Needed Date",
+                "destroyed_date": "Destroy Date"
+            }
+        }
+
+        const requestFormDataBasic = {
+            "date_created": "Create Time",
+            "data_elements": "Data Elements"
+        }
+
+        const approveLevel = {
+            0: ["Processing", "request-history-card-approval-label-processing"],
+            1: ["Approved", "request-history-card-approval-label-approved"],
+            2: ["Declined", "request-history-card-approval-label-declined"]
+        }
+
+        var info = {{ data | tojson}}
+        for (let item of info) {
+            renderCard(item)
+        }
+
+        function renderCard(data) {
+            console.log(data)
+            thisCard = document.createElement("div");
+            thisCard.setAttribute("class", "request-history-card");
+
+            // basic info
+            createApprovalLabel = document.createElement("div");
+            createApprovalLabel.classList.add("request-history-card-approval-label", approveLevel[data.approved][1]);
+            createApprovalLabel.innerHTML = "Status: " + approveLevel[data.approved][0];
+            deleteForm = document.createElement("form");
+            deleteForm.action = 'request_history/' + data.recno + '/delete';
+            deleteForm.method = 'post';
+            deleteForm.classList.add("request-history-card-aproval-form");
+            deleteFormSubmit = document.createElement("input");
+            deleteFormSubmit.type = 'submit';
+            deleteFormSubmit.value = 'Delete';
+            deleteForm.appendChild(deleteFormSubmit);
+            createApprovalLabel.appendChild(deleteForm);
+            thisCard.appendChild(createApprovalLabel);
+
+            for (let item in requestFormDataBasic) {
+                itemRow = document.createElement("div");
+                itemRow.setAttribute("class", "request-history-card-item-row")
+                itemRowKey = document.createElement("div");
+                itemRowKey.setAttribute("class", "request-history-card-item-row-key");
+                itemRowKey.innerHTML = requestFormDataBasic[item];
+                itemRowValue = document.createElement("div");
+                itemRowValue.setAttribute("class", "request-history-card-item-row-value");
+                itemRowValue.innerHTML = data[item];
+                itemRow.appendChild(itemRowKey);
+                itemRow.appendChild(itemRowValue);
+                thisCard.appendChild(itemRow);
+            }
+
+            // hidden info
+            hiddenInfoSection = document.createElement("div");
+            hiddenInfoSection.classList.add("request-history-card-hidden-section", "request-history-card-hidden-section-none");
+
+            for (let keyVal in requestFormData) {
+                itemRow = document.createElement("div");
+                itemRow.setAttribute("class", "request-history-card-item-row-category")
+                itemRow.innerHTML = keyVal;
+                hiddenInfoSection.appendChild(itemRow);
+
+                for (let item in requestFormData[keyVal]) {
+                    itemRow = document.createElement("div");
+                    itemRow.setAttribute("class", "request-history-card-item-row")
+                    itemRowKey = document.createElement("div");
+                    itemRowKey.setAttribute("class", "request-history-card-item-row-key");
+                    itemRowKey.innerHTML = requestFormData[keyVal][item];
+                    itemRowValue = document.createElement("div");
+                    itemRowValue.setAttribute("class", "request-history-card-item-row-value");
+                    itemRowValue.innerHTML = data[item];
+                    itemRow.appendChild(itemRowKey);
+                    itemRow.appendChild(itemRowValue);
+                    hiddenInfoSection.appendChild(itemRow);
+                }
+            }
+
+            thisCard.appendChild(hiddenInfoSection);
+
+            // card bottom controller
+            viewDetailBar = document.createElement("div");
+            viewDetailBar.setAttribute("class", "request-history-card-view-detail");
+            let thatSection = this.hiddenInfoSection;
+            viewDetailBar.onclick = function () {
+                if (thatSection.className.indexOf("request-history-card-hidden-section-none") === -1) {
+                    thatSection.classList.add("request-history-card-hidden-section-none");
+                    this.innerHTML = "View Detail";
+                } else {
+                    thatSection.classList.remove("request-history-card-hidden-section-none");
+                    this.innerHTML = "Close Detail";
+                }
+            };
+            viewDetailBar.innerHTML = "View Detail";
+            thisCard.appendChild(viewDetailBar);
+
+            // append whole card
+            document.getElementById('request-history-section').appendChild(thisCard);
+        }
+    </script>
+
+    <footer class="upload-footer">
+        <p class="m-4 text-center text-dark">Copyright &copy; AggieSTEM 2019</p>
+    </footer>
 
 
-<div><a href='{{ url_for('user_profile') }}'>Back</a></div>
-<div><a href='{{ url_for('request_data_form') }}'>New Request</a></div>
+    <!-- <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-{% if data|length == 0 %}
-    <h2>No data request record</h2>
-{% else %}
-    <table>
-        <thead>
-        <tr>
-            <th>Delete</th>
-            {% for key in data[0].keys() %}
-                <th>{{ key }}</th>
-            {% endfor %}
-        </tr>
-        </thead>
-        <tbody>
-        {% for row in data %}
-            <tr class="{{ 'approved' if row.approved=='1' }} {{ 'declined' if row.approved=='2' }} {{ 'default' if row.approved=='0' }}">
-                <td>
-                    <form action='{{ url_for('delete_request', recno=row.recno) }}' method='post'>
-                        <input type='submit' value='Delete'>
-                    </form>
-                </td>
-                {% for d in row.values() %}
-                    <td>{{ d }}</td>
-                {% endfor %}
-
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
+    <!-- Custom scripts for this template -->
+    <!-- <script src="/js/creative.min.js"></script> -->
+    <script src="{{ url_for('static', filename='js/creative.min.js') }}"></script>
 
 </body>
+
 </html>
