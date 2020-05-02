@@ -15,11 +15,13 @@ def signin_test(driver: Chrome, credentials: dict) -> None:
     password = driver.find_element_by_id('password')
     password.clear()
     password.send_keys(credentials['password'])
-
+    
+    time.sleep(10)
+    
     submit = driver.find_element_by_tag_name('button')
     submit.click()
 
-    time.sleep(1)
+    time.sleep(10)
     assert 'dashboard' in driver.current_url
 
 
@@ -29,11 +31,13 @@ def dashboard_manage_users_test(driver: Chrome) -> None:
     
     button = driver.find_element_by_tag_name('button')	
     button.click()
+
+    time.sleep(2)
     
     find = driver.find_element_by_id('manageuser')
     find.click()
 
-    time.sleep(1)
+    time.sleep(10)
     assert 'manage_users' in driver.current_url
     
 
@@ -44,10 +48,12 @@ def dashboard_manage_data_access_test(driver: Chrome) -> None:
     button = driver.find_element_by_tag_name('button')
     button.click()
 
+    time.sleep(2)
+
     find = driver.find_element_by_id('manage-data-access')
     find.click()
 
-    time.sleep(1)
+    time.sleep(10)
     assert 'manage_data_access' in driver.current_url
 
 
@@ -57,11 +63,13 @@ def dashboard_message_users_test(driver: Chrome) -> None:
 
     button = driver.find_element_by_tag_name('button')
     button.click()
-    
+   
+    time.sleep(2)
+
     find = driver.find_element_by_id('messageusers')
     find.click()
 
-    time.sleep(1)
+    time.sleep(10)
     assert 'message_users' in driver.current_url
     
     dashboard = driver.find_element_by_xpath("//div[@class='container']/a")

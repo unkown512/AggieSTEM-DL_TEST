@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from helper import selenium_init, get_random_credential
-from test import access_test, signup_wrong_password_test, signup_short_password_test, signup_wrong_email_test, signup_right_test, signin_test
+from test import access_test, signup_short_password_test, signup_right_test, signin_test, user_profile_test
 from test_yuchen import dashboard_login_test, dashboard_logout_test
 import random
 
@@ -26,6 +26,8 @@ signup_right_test(driver, credentials)
 signin_test(driver, credentials)
 
 dashboard_login_test(driver, credentials)
+
+user_profile_test(driver)
 
 dashboard_logout_test(driver)
 
