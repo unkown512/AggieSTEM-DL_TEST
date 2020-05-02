@@ -3,12 +3,10 @@
 from selenium.webdriver import Chrome
 from selenium.webdriver.support.ui import Select
 import re
-from selenium.webdriver.remote.webelement import WebElement
-from time import sleep
 
 
 def access_test(driver: Chrome):
-    target_site = 'http://localhost:8080/'
+    target_site = 'http://localhost:5000/'
     driver.get(target_site)
 
     check_string = 'Hello, World! The Aggie STEM DL is currently down due to maintenance.. Please come back another time'
@@ -16,7 +14,7 @@ def access_test(driver: Chrome):
 
 
 def signup_test(driver: Chrome, credentials: dict):
-    target_site = 'http://localhost:8080/signup'
+    target_site = 'http://localhost:5000/signup'
     driver.get(target_site)
 
     username = driver.find_element_by_id('username')
@@ -61,7 +59,7 @@ def signup_test(driver: Chrome, credentials: dict):
 
 
 def signin_test(driver: Chrome, credentials: dict) -> None:
-    target_site = 'localhost:8080/signin'
+    target_site = 'localhost:5000/signin'
     driver.get(target_site)
 
     email = driver.find_element_by_id('email')
@@ -100,39 +98,7 @@ def search_test(driver: Chrome, search_keywords: str):
 
 
 def user_profile_test(driver: Chrome) -> None:
-    target_site = 'localhost:8080/user_profile'
+    target_site = 'localhost:5000/user_profile'
     driver.get(target_site)
     keywords = 'coco'
     search_test(driver, keywords)
-
-
-def fill_text_field(parent: WebElement or Chrome, id: str, content: str) -> None:
-    text_field = parent.find_element_by_id(id)
-    text_field.clear()
-    text_field.send_keys(content)
-
-
-def fill_request_form_test(driver: Chrome, form_info: dict) -> None:
-    target_site = 'localhost:8080/request_data_form'
-    driver.get(target_site)
-
-    for id, content in form_info.items():
-        fill_text_field(driver, id, content)
-    else:
-        submit = driver.find_element_by_xpath("//button[contains(text(), 'Submit')]")
-        submit.click()
-        accept = driver.find_element_by_id('accept_display_terms')
-        sleep(1)
-        if accept.is_displayed():
-            accept.click()
-            assert 'user_profile' in driver.current_url
-        else:
-            print('hidden element interaction not handled by time wait.')
-
-
-def show_data_test(driver: Chrome):
-    target_site = 'localhost:8080/show_data/{}'
-    data_names = ['CIFAR-10', 'MNIST', 'MS-COCO', 'IMDB%20Reviews', 'table']
-    for data_name in data_names:
-        driver.get(target_site.format(data_name))
-        sleep(5)
