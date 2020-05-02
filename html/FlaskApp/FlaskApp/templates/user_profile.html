@@ -1,304 +1,291 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+  <head>
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-  <title>Aggie STEM</title>
+    <title>Aggie STEM</title>
 
-  <!-- Bootstrap core CSS -->
-  <!-- <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/extra.css') }}">
+    <!-- Bootstrap core CSS -->
+    <!-- <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/extra.css') }}">
 
-  <!-- Custom fonts for this template -->
-  <!-- <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Custom fonts for this template -->
+    <!-- <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"> -->
 
-  <!-- Google API fons -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/google_apis/merriweather_fonts.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/google_apis/open_sans_italic_fonts.css') }}">
+    <!-- Google API fons -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/google_apis/merriweather_fonts.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/google_apis/open_sans_italic_fonts.css') }}">
 
-  <!-- Plugin CSS -->
-  <!-- <link href="/vendor/magnific-popup/magnific-popup.css" rel="stylesheet"> -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/magnific-popup/magnific-popup.css') }}">
+    <!-- Plugin CSS -->
+    <!-- <link href="/vendor/magnific-popup/magnific-popup.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/magnific-popup/magnific-popup.css') }}">
 
-  <!-- Custom styles for this template -->
-  <!-- <link href="/css/creative.min.css" rel="stylesheet"> -->
-  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/creative.min.css') }}">-->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/creative.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/user_profile.css') }}">
+    <!-- Custom styles for this template -->
+    <!-- <link href="/css/creative.min.css" rel="stylesheet"> -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/creative.min.css') }}">-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/creative.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user_profile.css') }}">
 
-  <!--- MOBILE -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile/jquery.mobile-1.3.0.min.css') }}">
+    <!--- MOBILE -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile/jquery.mobile-1.3.0.min.css') }}">
 
-</head>
+  </head>
 
-<body id="page-top">
+  <body id="page-top">
 
-  <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-    <div class="container">
-      <a class="navbar-brand js-scroll-trigger" href="{{ url_for('dashboard') }}">Aggie STEM</a>
-      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
-        data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
-        aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
-          {% if access_level >= 3 %}
-          <li class="nav-item" id="manageuser" name="manageuser">
-            <a class="nav-link js-scroll-trigger" href="{{ url_for('manage_users') }}">Manage Users</a>
-          </li>
-          <!--<li class="nav-item" id="managegroups" name="managegroups">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="{{ url_for('dashboard') }}">Aggie STEM</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            {% if access_level >= 3 %}
+            <li class="nav-item" id="manageuser" name="manageuser">
+              <a class="nav-link js-scroll-trigger" href="{{ url_for('manage_users') }}">Manage Users</a>
+            </li>
+            <!--<li class="nav-item" id="managegroups" name="managegroups">
               <a class="nav-link js-scroll-trigger" href="{{ url_for('manage_groups') }}">Manage Groups</a>
       </li>-->
-          {% endif %}
-          {% if access_level == 3 %}
-          <li class="nav-item" id="messageusers" name="messageusers">
-            <a class="nav-link js-scroll-trigger" href="{{ url_for('message_users') }}">Message Users</a>
-          </li>
-          {% endif %}
-          <li class="nav-item" id="login" name="login">
-            <a class="nav-link js-scroll-trigger" href="{{ url_for('user_profile') }}">{{user}}</a>
-          </li>
-          <li class="nav-item" id="logout" name="logout">
-            <a class="nav-link js-scroll-trigger" href="{{ url_for('logout') }}">Logout</a>
-          </li>
-        </ul>
+            {% endif %}
+            {% if access_level == 3 %}
+            <li class="nav-item" id="messageusers" name="messageusers">
+              <a class="nav-link js-scroll-trigger" href="{{ url_for('message_users') }}">Message Users</a>
+            </li>
+            {% endif %}
+            <li class="nav-item" id="login" name="login">
+              <a class="nav-link js-scroll-trigger" href="{{ url_for('user_profile') }}">{{user}}</a>
+            </li>
+            <li class="nav-item" id="logout" name="logout">
+              <a class="nav-link js-scroll-trigger" href="{{ url_for('logout') }}">Logout</a>
+            </li>
+          </ul>
+        </div>
       </div>
+    </nav>
+
+    <div class="container emp-profile" style="margin-top:5%">
+      <form method="post" id="profile_form" action="{{url_for('upload_profile_image') }}" enctype="multipart/form-data">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="profile-img">
+              <img src="{{profile_img}}" alt=""/>
+              <div class="file btn btn-lg btn-primary">
+                Change Photo
+                <input type="file" id="user_photo" name="file" class="file-upload" accept="image/*" single/>
+              </div><br><br><br>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="profile-head">
+              <h5>
+                {{user}}
+              </h5>
+              <h6>
+                Developer
+              </h6>
+              <p class="profile-datasets">Total Data Sets : <span>0</span></p>
+              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">About</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Data Sets</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+            <div class="col-md-2">
+                <a id="btn-request-history" href="{{url_for('request_history')}}" class="btn btn-primary btn-block ">Request History</a>
+            </div>
+          <div class="col-md-2">
+            <a id="btn-request" href="{{url_for('request_data_form')}}" class="btn btn-primary btn-block ">Request Data</a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+              <a id="btn-contact" class="btn btn-primary btn-block js-scroll-trigger text-white" (click)="clearModal()" data-toggle="modal" data-target="#contact">Contact</a>
+              <div class="profile-work">
+                  <p>Research Topics</p>
+      <a href="#">{{user_links.ext}}</a><br/>
+                  <p>CSV</p>
+      <a href="#">{{user_links.csv}}</a><br/>
+              </div>
+          </div>
+          <div class="col-md-8">
+            <div class="tab-content profile-tab" id="myTabContent">
+              <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <div class="row">
+                  <div class="col-md-6">
+                    <label>User Id</label>
+                  </div>
+                  <div class="col-md-6">
+                    <p>{{user}}</p>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label>Email</label>
+                  </div>
+                  <div class="col-md-6">
+                    <p id="email2">{{email}}</p>
+                    <input type='hidden' id='email' name='email' value={{email}}>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label>Phone</label>
+                  </div>
+                  <div class="col-md-6">
+                    <p id='phone2'>{{phonenumber}}</p>
+                    <input type='hidden' id='phone' name='phone' value={{phonenumber}}>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <label>Position</label>
+                  </div>
+                  <div class="col-md-6">
+                    <p>{{position}}</p>
+                  </div>
+                </div>
+              </div>
+	      <a id="btn-search" class="btn btn-primary btn-block js-scroll-trigger text-white" (click)="clearModal()" data-toggle="modal" data-target="#search">Search Data</a>
+              <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="row">
+                  <div class="col-md-6">
+                    <label>TODO</label>
+                  </div>
+                  <div class="col-md-6">
+                    <p>DATA SET TABLE</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
-  </nav>
 
-  <div class="container emp-profile" style="margin-top:5%">
-    <form method="post" id="profile_form" action="{{url_for('upload_profile_image') }}" enctype="multipart/form-data">
-      <div class="row">
-        <div class="col-md-4">
-          <div class="profile-img">
-            <img src="{{profile_img}}" alt="" />
-            <div class="file btn btn-lg btn-primary">
-              Change Photo
-              <input type="file" id="user_photo" name="file" class="file-upload" accept="image/*" single />
-            </div><br><br><br>
+    <!-- CONTACT POPUP -->
+    <div class="modal fade" id="contact" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="contact">Contact User {{user}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
           </div>
-        </div>
-        <div class="col-md-4">
-          <div class="profile-head">
-            <h5>
-              {{user}}
-            </h5>
-            <h6>
-              Developer
-            </h6>
-            <p class="profile-datasets">Total Data Sets : <span>0</span></p>
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
-                  aria-selected="true">About</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
-                  aria-controls="profile" aria-selected="false">Data Sets</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <a id="btn-request-history" href="{{url_for('request_history')}}" class="btn btn-primary btn-block ">Request
-            History</a>
-        </div>
-        <div class="col-md-2">
-          <a id="btn-request" href="{{url_for('request_data_form')}}" class="btn btn-primary btn-block ">Request
-            Data</a>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-4">
-          <a id="btn-contact" class="btn btn-primary btn-block js-scroll-trigger text-white" (click)="clearModal()"
-            data-toggle="modal" data-target="#contact">Contact</a>
-          <div class="profile-work">
-            <p>Research Topics</p>
-            <a href="#">{{user_links.ext}}</a><br />
-            <p>CSV</p>
-            <a href="#">{{user_links.csv}}</a><br />
-          </div>
-        </div>
-        <div class="col-md-8">
-          <div class="tab-content profile-tab" id="myTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-              <div class="row">
-                <div class="col-md-6">
-                  <label>User Id</label>
-                </div>
-                <div class="col-md-6">
-                  <p>{{user}}</p>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <label>Email</label>
-                </div>
-                <div class="col-md-6">
-                  <p id="email2">{{email}}</p>
-                  <input type='hidden' id='email' name='email' value={{email}}>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <label>Phone</label>
-                </div>
-                <div class="col-md-6">
-                  <p id='phone2'>{{phonenumber}}</p>
-                  <input type='hidden' id='phone' name='phone' value={{phonenumber}}>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <label>Position</label>
-                </div>
-                <div class="col-md-6">
-                  <p>{{position}}</p>
-                </div>
-              </div>
-            </div>
-            <a id="btn-search" class="btn btn-primary btn-block js-scroll-trigger text-white" (click)="clearModal()"
-              data-toggle="modal" data-target="#search">Search Data</a>
-            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-              <div class="row">
-                <div class="col-md-6">
-                  <label>TODO</label>
-                </div>
-                <div class="col-md-6">
-                  <p>DATA SET TABLE</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </form>
-  </div>
-
-  <!-- CONTACT POPUP -->
-  <div class="modal fade" id="contact" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="contact">Contact User {{user}}</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <p for="msj">This message will be sent to {{ user }} and is limited to 140 characters. We recommend keeping
+          <div class="modal-body">
+            <div class="form-group">
+              <p for="msj">This message will be sent to {{ user }} and is limited to 140 characters. We recommend keeping
               this message simple to insure it is recieved in proper format.
-            </p>
-          </div>
-          <div class="form-group">
-            <div class="custom-control custom-radio">
-              <input type="radio" class="custom-control-input" id="emailmsg" name="emailmsg" checked>
-              <label class="custom-control-label" for="emailmsg">Email</label>
+              </p>
             </div>
-            <div class="custom-control custom-radio">
-              <input type="radio" class="custom-control-input" id="txtmsg" name="txtmsg">
-              <label class="custom-control-label" for="txtmsg">Text</label>
+            <div class="form-group">
+              <div class="custom-control custom-radio">
+                <input type="radio" class="custom-control-input" id="emailmsg" name="emailmsg" checked>
+                <label class="custom-control-label" for="emailmsg">Email</label>
+              </div>
+              <div class="custom-control custom-radio">
+                <input type="radio" class="custom-control-input" id="txtmsg" name="txtmsg">
+                <label class="custom-control-label" for="txtmsg">Text</label>
+              </div>
             </div>
-          </div>
-          <!-- <div class="form-group">
+           <!-- <div class="form-group">
               <label for="txtEmail">Subject</label>
               <input type="text" id="txtEmail" class="form-control">
            </div>-->
-          <div class="form-group">
-            <label for="txtPhone">Message</label>
-            <textarea name="message" rows="5" id="message" style="min-width:100%"></textarea>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button id="send_sms_email" type="button" class="btn btn-primary" (click)="openModal()"
-            data-dismiss="modal">Send</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CONTACT POPUP -->
-  <div class="modal fade" id="search" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" style="max-width:800px" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="contact">Search Data {{user}}</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <p for="msj">This will search the datas that {{user}} owns according to the keywords you provide.
-            </p>
-          </div>
-          <div class="form-group">
             <div class="form-group">
-              <label for="txtKeywords">Keywords</label>
-              <input name="keywords" id="keywords" style="min-width:100%"></input>
+              <label for="txtPhone">Message</label>
+              <textarea name="message" rows="5" id="message" style="min-width:100%"></textarea>
             </div>
           </div>
-          <div id="search-result-wrapper">
-            <p>The search result for <strong id="result-keyword-show"></strong>:</p>
-            <p> <span class="search-result-valid">&nbsp&nbsp&nbsp&nbsp</span> contains keywords <span
-                class="search-result-other">&nbsp&nbsp&nbsp&nbsp</span> others</p>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button id="send_sms_email" type="button" class="btn btn-primary" (click)="openModal()" data-dismiss="modal">Send</button>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-          <button id="search_keywords" type="button" class="btn btn-primary" (click)="openModal()">Search</button>
         </div>
       </div>
     </div>
-  </div>
 
-</body>
-<footer class="py-5 bg-dark">
-  <div class="container">
-    <p class="m-4 text-center text-dark">Copyright &copy; AggieSTEM 2019</p>
-  </div>
-  <!-- /.container -->
-</footer>
+    <!-- CONTACT POPUP -->
+    <div class="modal fade" id="search" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" style="max-width:800px" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="contact">Search Data {{user}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+		    <p for="msj">This will search the datas that {{user}} owns according to the keywords you provide.
+              </p>
+            </div>
+            <div class="form-group">
+              <div class="form-group">
+                <label for="txtKeywords">Keywords</label>
+                <input name="keywords" id="keywords" style="min-width:100%"></input>
+              </div>
+            </div>
+	    <div id="search-result-wrapper">
+		    <p>The search result for <strong id="result-keyword-show"></strong>:</p>
+		    <p> <span class="search-result-valid">&nbsp&nbsp&nbsp&nbsp</span> contains keywords <span class="search-result-other">&nbsp&nbsp&nbsp&nbsp</span> others</p>
+	    </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button id="search_keywords" type="button" class="btn btn-primary" (click)="openModal()">Search</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<!-- Bootstrap core JavaScript -->
-<!-- <script src="/vendor/jquery/jquery.min.js"></script> -->
-<script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/phonenumber.js') }}"></script>
+  </body>
+  <footer class="py-5 bg-dark">
+    <div class="container">
+      <p class="m-4 text-center text-dark">Copyright &copy; AggieSTEM 2019</p>
+    </div>
+    <!-- /.container -->
+  </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- <script src="/vendor/jquery/jquery.min.js"></script> -->
+    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/phonenumber.js') }}"></script>
 
 
-<script>
-  $('#phone').text(format_phonenumber("{{phonenumber}}"));
-</script>
+    <script>
+      $('#phone').text(format_phonenumber("{{phonenumber}}"));
+    </script>
 
-<!-- <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
-<script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-<!-- Plugin JavaScript -->
-<!-- <script src="/vendor/jquery-easing/jquery.easing.min.js"></script> -->
-<script src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+    <!-- Plugin JavaScript -->
+    <!-- <script src="/vendor/jquery-easing/jquery.easing.min.js"></script> -->
+    <script src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
-<!-- <script src="/vendor/scrollreveal/scrollreveal.min.js"></script> -->
-<script src="{{ url_for('static', filename='vendor/scrollreveal/scrollreveal.min.js') }}"></script>
+    <!-- <script src="/vendor/scrollreveal/scrollreveal.min.js"></script> -->
+    <script src="{{ url_for('static', filename='vendor/scrollreveal/scrollreveal.min.js') }}"></script>
 
-<!-- <script src="/vendor/magnific-popup/jquery.magnific-popup.min.js"></script> -->
-<script src="{{ url_for('static', filename='vendor/magnific-popup/jquery.magnific-popup.min.js') }}"></script>
+    <!-- <script src="/vendor/magnific-popup/jquery.magnific-popup.min.js"></script> -->
+    <script src="{{ url_for('static', filename='vendor/magnific-popup/jquery.magnific-popup.min.js') }}"></script>
 
-<!-- Custom scripts for this template -->
-<!-- <script src="/js/creative.min.js"></script> -->
-<script src="{{ url_for('static', filename='js/creative.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/message.js') }}"></script>
-<script src="{{ url_for('static', filename='js/user_profile.js') }}"></script>
-
+    <!-- Custom scripts for this template -->
+    <!-- <script src="/js/creative.min.js"></script> -->
+    <script src="{{ url_for('static', filename='js/creative.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/message.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/user_profile.js') }}"></script>
 </html>
