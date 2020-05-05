@@ -45,6 +45,8 @@ def signup_test(driver: Chrome, credentials: dict):
     select = Select(contact_agreement)
     select.select_by_value('T')
 
+    time.sleep(10)
+
     submit = driver.find_element_by_tag_name('button')
     submit.click()
     assert 'signup' not in driver.current_url
@@ -62,10 +64,12 @@ def signin_test(driver: Chrome, credentials: dict) -> None:
     password.clear()
     password.send_keys(credentials['password'])
 
+    time.sleep(5)
+
     submit = driver.find_element_by_tag_name('button')
     submit.click()
 
-    time.sleep(10)
+    time.sleep(15)
     assert 'dashboard' in driver.current_url
 
 
@@ -76,7 +80,7 @@ def dashboard_logout_test(driver: Chrome) -> None:
     find = driver.find_element_by_id('logout')
     find.click()
 
-    time.sleep(1)
+    time.sleep(5)
     assert 'signin' in driver.current_url
 
 
@@ -107,6 +111,8 @@ def admin_signin_test(driver: Chrome, credentials: dict) -> None:
     password = driver.find_element_by_id('password')
     password.clear()
     password.send_keys(credentials['password'])
+    
+    time.sleep(5)
 
     submit = driver.find_element_by_tag_name('button')
     submit.click()
@@ -116,9 +122,13 @@ def admin_signin_test(driver: Chrome, credentials: dict) -> None:
 def admin_dashboard_manage_users_test(driver: Chrome) -> None:  
     target_site = 'http://localhost:5000/dashboard'
     driver.get(target_site)
+    
+    time.sleep(15)
 
     find = driver.find_element_by_id('manageuser')
     find.click()
+
+    time.sleep(5)
     assert 'manage_users' in driver.current_url
 
 

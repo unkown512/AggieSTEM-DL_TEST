@@ -1,10 +1,9 @@
-# @author xuluming
-# @date 3/24/20 3:40 PM 
-
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from helper import selenium_init, get_random_credential
 from test_admin import signin_test, dashboard_manage_users_test, dashboard_manage_data_access_test, dashboard_message_users_test
+from test_yuchen import dashboard_logout_test
+
 
 driver = selenium_init()
 
@@ -23,3 +22,5 @@ dashboard_manage_users_test(driver)
 dashboard_manage_data_access_test(driver)
 
 dashboard_message_users_test(driver)
+
+dashboard_logout_test(driver)

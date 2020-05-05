@@ -64,17 +64,13 @@ def dashboard_login_test(driver: Chrome, credentials: dict) -> None:
     driver.get(target_site)
     button = driver.find_element_by_tag_name('button')
     button.click()
+    
+    time.sleep(5)
 
     find = driver.find_element_by_id('login')
     find.click()
 
-    time.sleep(1)
     assert 'user_profile' in driver.current_url
-    
-    dashboard = driver.find_element_by_xpath("//div[@class='container']/a")
-    driver.execute_script("arguments[0].click();",dashboard)
-    time.sleep(1)
-    assert 'dashboard' in driver.current_url
 
 
 def dashboard_logout_test(driver: Chrome) -> None:
@@ -82,6 +78,8 @@ def dashboard_logout_test(driver: Chrome) -> None:
     driver.get(target_site)
     button = driver.find_element_by_tag_name('button')
     button.click()
+
+    time.sleep(3)
 
     find = driver.find_element_by_id('logout')
     find.click()
