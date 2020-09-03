@@ -1,0 +1,9 @@
+__pycache__/
+html/FlaskApp/FlaskApp/database/user_info.json
+.idea/
+
+/html/FlaskApp/FlaskApp/test/chromedriver
+/html/FlaskApp/FlaskApp/static/data/
+/venv/
+.vscode/
+

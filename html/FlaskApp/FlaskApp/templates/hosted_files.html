@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hosted Files</title>
+</head>
+<body>
+<h1>All Files Hosted on Server</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Dataset Name</th>
+        <th>File Name</th>
+        <th>Size</th>
+        <th>Upload Time</th>
+        <th>Download Link</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for info in g.file_info %}
+        <tr>
+            <td>{{ info.dataset_name }}</td>
+            <td>{{ info.file_name }}</td>
+            <td>{{ info.file_size }}</td>
+            <td>{{ info.file_upload_time }}</td>
+            <td><a href='{{ url_for('download_file', file_id=info.file_id) }}'>Download</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>

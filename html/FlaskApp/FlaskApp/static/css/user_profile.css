@@ -112,3 +112,16 @@ body{
   color: #222;
   border-color: #222;
 }
+
+#search-result-wrapper {
+  max-height:500px;
+  display: none;
+}
+
+.search-result-valid {
+  background: lightblue;
+}
+
+.search-result-other {
+  background: lightgrey;
+}
